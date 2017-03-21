@@ -1,0 +1,118 @@
+{% extends "/presupuesto/print-base.twig" %}
+
+{% block content %}
+    {% set lineasPorPagina = 20 %}
+    {% set lineas = detalle|length %}
+    {% set paginas = (lineas // lineasPorPagina) + 1 %}
+    {% set ultimaLinea = 0 %}
+
+    {% for pagina in range(1, paginas) %}
+        {% if pagina > 1 %}
+            <div style="page-break-before: always;"></div>
+        {% endif %}
+
+        <table class="head">
+            <tbody>
+                <tr>
+                    <td class="text-right" colspan="3" style="font-size:8px;">
+                        Página {{ pagina }} de {{ paginas }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="w100"><strong>Cliente</strong></td>
+                    <td class="text-right"><strong>Número</strong></td>
+                    <td class="text-right">{{ presupuesto.id }}</td>
+                </tr>
+                <tr>
+                    <td class="w100">{{ presupuesto.cliente_nombre }}</td>
+                    <td class="text-right"><strong>Fecha</strong></td>
+                    <td class="text-right">{{ presupuesto.fecha|date("d/m/Y") }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="detail">
+            <thead>
+                <tr>
+                    <th>Cód.</th>
+                    <th class="w100">Descripción</th>
+                    <th>Cant</th>
+                    <th>T</th>
+                    <th>P.U.</th>
+                    <th colspan="2">Descuento</th>
+                    <th>P.U. C/Desc</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set lineas = detalle|slice(ultimaLinea, lineasPorPagina) %}
+                {% for linea in lineas %}
+                    <tr>
+                        <td class="text-right">{{ linea.codigo }}</td>
+                        <td style="white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;">
+                            {{ linea.descripcion }}
+                        </td>
+                        <td class="text-right">{{ linea.cantidad }}</td>
+                        <td class="text-center">{{ linea.tipo == 'N' ? '': linea.tipo }}</td>
+                        <td class="text-right nowrap">$ {{ linea.precio_recargo|number_format(2) }}</td>
+                        <td class="text-right">{{ linea.descuento1|number_format }}%</td>
+                        <td class="text-right">{{ linea.descuento2|number_format }}%</td>
+                        <td class="text-right nowrap">$ {{ linea.precio_neto|number_format(2) }}</td>
+                        <td class="text-right nowrap">$ {{ linea.importe|number_format(2) }}</td>
+                    </tr>
+                    {% set ultimaLinea = ultimaLinea + 1 %}
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+
+    <table class="total" style="page-break-inside: avoid;">
+        <tbody>
+            <tr>
+                <td class="text-right w100">Subtotal</td>
+                <td class="text-right nowrap">
+                    $ {{ presupuesto.subtotal|number_format(2) }}
+                </td>
+            </tr>
+
+            {% if presupuesto.iva_porcentaje > 0 %}
+                <tr>
+                    <td class="text-right w100">
+                        {{ presupuesto.iva_descripcion }} IVA {{ presupuesto.iva_porcentaje }}%
+                    </td>
+                    <td class="text-right nowrap">
+                        $ {{ presupuesto.iva|number_format(2) }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right w100">
+                        Subtotal con IVA
+                    </td>
+                    <td class="text-right nowrap">
+                        $ {{ (presupuesto.subtotal + presupuesto.iva)|number_format(2) }}
+                    </td>
+                </tr>
+            {% endif %}
+
+            <tr>
+                <td class="text-right w100">Saldo en C. Corriente</td>
+                <td class="text-right nowrap">
+                    $ {{ presupuesto.cliente_saldo|number_format(2) }}
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right w100">Total</td>
+                <td class="text-right nowrap">
+                    <strong>$ {{ (presupuesto.total + presupuesto.cliente_saldo)|number_format(2) }}</strong>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="foot">
+        {{ presupuesto.notas|nl2br }}<br>
+        <p>Al dia de la fecha se realiza el pago de: $ </p>
+        <br><br>
+        <p class="signature">Firma</p>
+    </div>
+{% endblock %}

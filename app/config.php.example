@@ -1,0 +1,17 @@
+<?php
+define('DEBUG', true);
+define('FOLDER_FILES', ROOT . 'files' . DS);
+
+// On Linux it prints at 75 dpi (native for WebKit) while on Windows
+// it uses the desktop's DPI (which is normally 96 dpi).
+// You can use --zoom 0.78125 (75/96) to get the same effect on Linux.
+define('WKHTMLTOPDF_ZOOM', 0.80);
+
+Settings::set('url', 'http://localhost/quiosco');
+
+Settings::set('db', [
+    'host'   => 'localhost',
+    'dbname' => 'quiosco',
+    'user'   => 'root',
+    'pass'   => ''
+]);

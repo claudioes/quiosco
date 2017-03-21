@@ -1,0 +1,99 @@
+{% macro input(id, title, value, properties) %}
+    <div class="form-group {{ (properties.required|default(false)) ? 'required' }}">
+        <label class="col-sm-2 control-label" for="{{ id }}">{{ title }}</label>
+        <div class="col-sm-10">
+            <input
+                type="text"
+                class="form-control {{ properties.class }}"
+                id="{{ id }}"
+                name="{{ id }}"
+                value="{{ value }}"
+                {% for _prop, _value in properties %}
+                    {{ _prop }}="{{ _value }}"
+                {% endfor %}
+            >
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro static(title, value) %}
+    <div class="form-group">
+        <label class="col-sm-2 control-label">{{ title }}</label>
+        <div class="col-sm-10">
+            <p class="form-control-static">{{ value }}</p>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro hidden(id, value) %}
+    <input
+        type="hidden"
+        id="{{ id }}"
+        name="{{ id }}"
+        value="{{ value }}"
+    >
+{% endmacro %}
+
+{% macro select(id, title, value, values, properties) %}
+    <div class="form-group {{ (properties.required|default(false)) ? 'required' }}">
+        <label class="col-sm-2 control-label" for="{{ id }}">{{ title }}</label>
+        <div class="col-sm-10">
+            <select
+                id="{{ id }}"
+                name="{{ id }}"
+                class="form-control {{ properties.class }}"
+                {% for _prop, _value in properties %}
+                    {{ _prop }}="{{ _value }}"
+                {% endfor %}
+            >
+                <option value="" selected disabled>Seleccione una opción...</option>
+                {% for key, name in values %}
+                    <option value="{{ key }}" {{ (value == key) ? 'selected': ''}} >{{ name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro text(id, title, value, properties) %}
+    <div class="form-group {{ (properties.required|default(false)) ? 'required' }}">
+        <label class="col-sm-2 control-label" for="{{ id }}">{{ title }}</label>
+        <div class="col-sm-10">
+            <textarea
+                id="{{ id }}"
+                name="{{ id }}"
+                class="form-control properties.class"
+                rows="4"
+                {% for _prop, _value in properties %}
+                    {{ _prop }}="{{ _value }}"
+                {% endfor %}
+            >{{ value }}</textarea>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro check(id, title, checked, properties) %}
+    <div class="checkbox">
+        <label>
+            <input
+                type="checkbox"
+                id="{{ id }}"
+                name="{{ id }}"
+                {{ (checked|default(false)) ? 'checked' }}
+                {% for _prop, _value in properties %}
+                    {{ _prop }}="{{ _value }}"
+                {% endfor %}
+            > {{ title }}
+        </label>
+    </div>
+{% endmacro %}
+
+{% macro buttonSaveCancel() %}
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-ok" style="margin-right: 0.5em;"></i>Guardar</button>
+            &nbsp;
+            <a href="#" onclick="history.back();">Cancelar</a>
+        </div>
+    </div>
+{% endmacro %}

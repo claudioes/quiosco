@@ -1,0 +1,128 @@
+{% macro hidden(id, value) %}
+    <input type="hidden" id="{{ id }}" name="{{ id }}" value="{{ value }}">
+{% endmacro %}
+
+{% macro static(value) %}
+    <p class="form-control-static">{{ value }}</p>
+{% endmacro %}
+
+{% macro label(for, title, properties) %}
+    <label
+        class="{{ properties.class }}"
+        for="{{ for }}"
+        {% for _prop, _value in properties %}
+            {{ _prop }}="{{ _value }}"
+        {% endfor %}
+    >{{ title }}</label>
+{% endmacro %}
+
+{% macro input(type, id, value, properties) %}
+    <input
+        type="{{ type }}"
+        class="{{ properties.class }}"
+        id="{{ id }}"
+        name="{{ id }}"
+        value="{{ value }}"
+        {% for _prop, _value in properties %}
+            {{ _prop }}="{{ _value }}"
+        {% endfor %}
+    >
+{% endmacro %}
+
+{% macro text(id, value, properties) %}
+    {% import _self as s %}
+    {{ s.input('text', id, value, properties )}}
+{% endmacro %}
+
+{% macro password(id, value, properties) %}
+    {% import _self as s %}
+    {{ s.input('password', id, value, properties )}}
+{% endmacro %}
+
+{% macro select(id, values, value, properties, allowNull) %}
+    <select
+        id="{{ id }}"
+        name="{{ id }}"
+        class="{{ properties.class }}"
+        {% for _prop, _value in properties %}
+            {{ _prop }}="{{ _value }}"
+        {% endfor %}
+    >
+        {% if allowNull|default(false) %}
+            <option value="" selected>{{ allowNull }}</option>
+        {% else %}
+            <option value="" disabled selected>Seleccione una opción</option>
+        {% endif %}
+
+        {% for key, name in values %}
+            <option value="{{ key }}" {{ (value == key) ? 'selected': ''}} >{{ name }}</option>
+        {% endfor %}
+    </select>
+{% endmacro %}
+
+{% macro textarea(id, value, properties) %}
+    <textarea
+        id="{{ id }}"
+        name="{{ id }}"
+        class="{{ properties.class }}"
+        {% for _prop, _value in properties %}
+            {{ _prop }}="{{ _value }}"
+        {% endfor %}
+    >{{ value }}</textarea>
+{% endmacro %}
+
+{% macro checkbox(title, checked, properties) %}
+    <label class="checkbox-inline">
+        <input type="checkbox" {{ (checked|default(false)) ? 'checked' }}
+            {% for _prop, _value in properties %}
+                {{ _prop }}="{{ _value }}"
+            {% endfor %}
+        > {{ title }}
+    </label>
+{% endmacro %}
+
+{% macro button(id, text, properties) %}
+    <button
+        type="button"
+        class="{{ properties.class }}"
+        id="{{ id }}"
+        name="{{ id }}"
+        {% for _prop, _value in properties %}
+            {{ _prop }}="{{ _value }}"
+        {% endfor %}
+    >{{ text|raw }}</button>
+{% endmacro %}
+
+{% macro submit(id, text, properties) %}
+    <button
+        type="submit"
+        id="{{ id }}"
+        name="{{ id }}"
+        class="{{ properties.class }}"
+        {% for _prop, _value in properties %}
+            {{ _prop }}="{{ _value }}"
+        {% endfor %}
+    >{{ text|raw }}</button>
+{% endmacro %}
+
+{% macro file(id, properties) %}
+    <input
+        type="file"
+        class="{{ properties.class }}"
+        id="{{ id }}"
+        name="{{ id }}"
+        {% for _prop, _value in properties %}
+            {{ _prop }}="{{ _value }}"
+        {% endfor %}
+    >
+{% endmacro %}
+
+{% macro buttonSaveCancel() %}
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-ok" style="margin-right: 0.5em;"></i>Guardar</button>
+            &nbsp;
+            <a href="#" onclick="history.back();">Cancelar</a>
+        </div>
+    </div>
+{% endmacro %}

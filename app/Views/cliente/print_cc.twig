@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Cuenta corriente de {{ cliente.nombre }}</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font: normal 11px tahoma, helvetica, arial, sans-serif;
+            }
+            table, tr, td, th, tbody, thead, tfoot {
+                page-break-inside: avoid !important;
+            }
+            table {
+            	border-collapse: collapse;
+            	border-spacing: 0;
+            }
+            table th, td {
+                padding: 4px;
+            }
+            table thead th {
+                background-color: rgb(200, 200, 200);
+                border: solid 2px rgb(100, 100, 100);
+                padding: 5px;
+            }
+            table tbody td {
+                border: solid 1px rgb(200, 200, 200);
+            }
+            table td.debe {
+                color: #006600;
+            }
+            table td.haber {
+                color: #CC0000;
+            }
+            table tr.totales {
+                font-weight: bold;
+            }
+            .text-right {
+                text-align: right !important;
+            }
+            .text-center {
+                text-align: center !important;
+            }
+            .w100 {
+                width: 100%;
+            }
+            .nowrap {
+                white-space: nowrap;
+            }
+        </style>
+    </head>
+    <body onload="window.print()">
+        <div class="w100">
+            <div class="text-center">
+                <h2>CUENTA CORRIENTE DE {{ cliente.nombre|upper }}</h2>
+                <p>
+                    {% if desde %}
+                        DESDE EL {{ desde|date("d/m/Y") }}
+                    {% endif %}
+
+                    {% if hasta %}
+                        HASTA EL {{ hasta|date("d/m/Y") }}
+                    {% endif %}
+                </p>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th class="w100">Concepto</th>
+                        <th>Debe</th>
+                        <th>Haber</th>
+                        <th>Saldo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set totalDebe, totalHaber, totalSaldo = 0, 0, 0 %}
+                    {% for ln in resumen %}
+                        <tr>
+                            <td class="text-right">{{ ln.fecha }}</td>
+                            <td>
+                                {{ ln.concepto }}
+                                {% if ln.presupuesto %}
+                                    (de {{ ln.presupuesto.cliente.nombre }})
+                                {% endif %}
+                            </td>
+                            <td class="text-right debe nowrap">
+                                {% if ln.debe > 0 %}
+                                    $ {{ ln.debe|number_format(2, ',', '.') }}
+                                {% endif %}
+                            </td>
+                            <td class="text-right haber nowrap">
+                                {% if ln.haber > 0 %}
+                                    $ {{ ln.haber|number_format(2, ',', '.') }}
+                                {% endif %}
+                            <td class="text-right nowrap">
+                                $ {{ ln.saldo|number_format(2, ',', '.') }}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center">Sin movimientos</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>

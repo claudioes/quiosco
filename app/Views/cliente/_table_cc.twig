@@ -1,0 +1,45 @@
+<div class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th style="width: 100%">Concepto</th>
+                <th>Debe</th>
+                <th>Haber</th>
+                <th>Saldo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set totalDebe, totalHaber, totalSaldo = 0, 0, 0 %}
+            {% for ln in resumen %}
+                <tr>
+                    <td class="text-right">{{ ln.fecha }}</td>
+                    {% if ln.presupuesto %}
+                        <td><a href="{{ urlFor('Presupuesto:printPage', { id: ln.presupuesto.id }) }}" target="_blank">{{ ln.concepto }}</a></td>
+                    {% elseif ln.recibo %}
+                        <td><a href="#" data-url="{{ urlFor('Caja:viewRecibo', { id: ln.recibo.id }) }}" class="recibo">{{ ln.concepto }}</a></td>
+                    {% else %}
+                        <td>{{ ln.concepto }}</td>
+                    {% endif %}
+                    <td class="text-right nowrap" style="color: #006600">
+                        {% if ln.debe %}
+                            $ {{ ln.debe|number_format(2, ',', '.') }}
+                        {% endif %}
+                    </td>
+                    <td class="text-right nowrap" style="color: #CC0000">
+                        {% if ln.haber %}
+                            $ {{ ln.haber|number_format(2, ',', '.') }}
+                        {% endif %}
+                    </td>
+                    <td class="text-right nowrap">
+                        $ {{ ln.saldo|number_format(2, ',', '.') }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6" class="text-center">Sin movimientos</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Listado de clientes</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font: normal 11px tahoma, helvetica, arial, sans-serif;
+            }
+            table {
+            	border-collapse: collapse;
+            	border-spacing: 0;
+            }
+            table th, td {
+                padding: 4px;
+            }
+            table thead th {
+                background-color: #c8c8c8;
+                border: solid 2px #636363;
+                padding: 5px;
+            }
+            table tbody td {
+                border: solid 1px #c8c8c8;
+            }
+            .text-right {
+                text-align: right !important;
+            }
+            .text-center {
+                text-align: center !important;
+            }
+            .w100 {
+                width: 100%;
+            }
+            .nowrap {
+                white-space: nowrap;
+            }
+        </style>
+    </head>
+    <body onload="window.print()">
+        <div class="w100">
+            <div class="text-center">
+                <h2>
+                    LISTADO DE CLIENTES<br>
+                </h2>
+            </div>
+            <table class="w100">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Deuda</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in detalle %}
+                        <tr>
+                            <td>
+                                {{ d.codigo }}
+                            </td>
+                            <td>
+                                {{ d.nombre }}
+                            </td>
+                            <td class="text-right nowrap">
+                                    $ {{ d.saldo|number_format(2, ',', '.') }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>

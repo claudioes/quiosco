@@ -1,0 +1,55 @@
+{% import "template/macro/form.twig" as form %}
+{% extends "template/base.twig" %}
+
+{% block css %}
+    <style>
+        input.editable {
+            width: 80px !important;
+        }
+        input.success-post {
+            background: #c8ffb1 !important;;
+        }
+    </style>
+{% endblock %}
+
+{% block jsapp %}
+    <script src="{{ siteUrlWithVersion('js/app/articulo.js') }}"></script>
+    <script>
+        $(function () {
+            App.Articulo.Index();
+        })
+    </script>
+{% endblock %}
+
+{% block content %}
+    <h1>Artículos</h1>
+
+    <div id="toolbar" class="btn-toolbar" role="toolbar">
+        <div class="btn-group" role="group">
+            <a href="{{ urlFor('Articulo:create') }}" class="btn btn-success">
+                <i class="glyphicon glyphicon-plus"></i> Nuevo
+            </a>
+        </div>
+        <div class="btn-group" role="group">
+            <a href="{{ urlFor('Articulo:aumento') }}" class="btn btn-default">
+                Aumento
+            </a>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table id="table" class="table table-bordered table-hover" width="100%">
+            <thead>
+                <tr>
+                    <th>Cód</th>
+                    <th style="width:100%">Descripción</th>
+                    <th>Stock</th>
+                    <th>Costo</th>
+                    <th>Ganancia</th>
+                    <th>Precio Venta</th>
+                    <th></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+{% endblock %}

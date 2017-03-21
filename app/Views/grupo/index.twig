@@ -1,0 +1,31 @@
+{% extends "template/base.twig" %}
+
+{% block jsapp %}
+    <script src="{{ siteUrlWithVersion('js/app/grupo.js') }}"></script>
+    <script>
+        Grupo.IndexView();
+    </script>
+{% endblock %}
+
+{% block content %}
+    <h1>Grupos</h1>
+
+    <div id="toolbar" class="btn-group" role="group">
+        <a href="{{ urlFor('Grupo:create') }}" class="btn btn-success">
+            <i class="glyphicon glyphicon-plus"></i> Nuevo
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table id="table" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th style="width:100%">Nombre</th>
+                    <th>Descuento</th>
+                    <th>Recargo</th>
+                    <th></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+{% endblock %}

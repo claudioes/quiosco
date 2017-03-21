@@ -1,0 +1,92 @@
+{% import "template/macro/form.twig" as form %}
+{% extends "template/base.twig" %}
+
+{% block jsapp %}
+    <script src="{{ siteUrlWithVersion('js/app/proveedor.js') }}"></script>
+    <script>
+        Proveedor.FormView();
+    </script>
+{% endblock %}
+
+{% block content %}
+    <h1>{{ proveedor ? 'Modificando': 'Nuevo' }} proveedor</h1>
+    <div class="alert alert-danger" role="alert" id="mensaje" style="display:none"></div>
+    <form class="form" id="form" action="{{ urlFor('Proveedor:save') }}" method="post">
+        {% if proveedor %}
+            {{ form.hidden('id', proveedor.id) }}
+        {% endif %}
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="form-group col-sm-2 required">
+                            {{ form.label('codigo', 'Código', { class: 'control-label' }) }}
+                            {{ form.text('codigo', proveedor.codigo, { class: 'form-control', required: '', autofocus: '', autocomplete: 'off' }) }}
+                        </div>
+                        <div class="form-group col-sm-10 required">
+                            {{ form.label('nombre', 'Nombre', { class: 'control-label' }) }}
+                            {{ form.text('nombre', proveedor.nombre, { class: 'form-control', required: '', autocomplete: 'off' }) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-8">
+                            {{ form.label('razon', 'Razón social', { class: 'control-label' }) }}
+                            {{ form.text('razon', proveedor.razon, { class: 'form-control', autocomplete: 'off' }) }}
+                        </div>
+                        <div class="form-group col-sm-4">
+                            {{ form.label('cuit', 'CUIT', { class: 'control-label' }) }}
+                            <div class="input-group">
+                                {{ form.text('cuit', proveedor.cuit, { class: 'form-control' }) }}
+                                <span class="input-group-btn">
+                                    {{ form.button('btn-buscar-cuit', '<i class="glyphicon glyphicon-refresh"></i>', { class: 'btn btn-default', title: 'Buscar y completar datos del CUIT' }) }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            {{ form.label('domicilio', 'Domicilio', { class: 'control-label' }) }}
+                            {{ form.text('domicilio', proveedor.domicilio, { class: 'form-control' }) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-8">
+                            {{ form.label('localidad', 'Localidad', { class: 'control-label' }) }}
+                            {{ form.text('localidad', proveedor.localidad, { class: 'form-control' }) }}
+                        </div>
+                        <div class="form-group col-sm-4">
+                            {{ form.label('cp', 'Código postal', { class: 'control-label' }) }}
+                            {{ form.text('cp', proveedor.cp, { class: 'form-control' }) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label class="control-label" for="telefono">Teléfono</label>
+                            <input type="text" class="form-control" name="telefono" value="{{ proveedor.telefono }}" autocomplete="off">
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label class="control-label" for="email">E-Mail</label>
+                            <input type="text" class="form-control" name="email" value="{{ proveedor.email }}" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <label class="control-label" for="notas">Notas</label>
+                            <textarea name="notas" class="form-control" rows="4">{{ proveedor.notas }}</textarea>
+                        </div>
+                    </div>
+                </div>
+                {% if proveedor %}
+                    <div class="col-md-6">
+                        <div id="documentos"></div>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="panel-footer">
+                <button type="submit" class="btn btn-success" style="margin-right: 1em;"><i class="glyphicon glyphicon-ok" style="margin-right: 0.5em;"></i>Guardar</button>
+                <a href="#" onclick="history.back();">Cancelar</a>
+            </div>
+        </div>
+    </form>
+    {% include 'proveedor/documento-form.twig' %}
+{% endblock %}

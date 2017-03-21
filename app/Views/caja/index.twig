@@ -1,0 +1,68 @@
+{% extends "template/base.twig" %}
+
+{% block jsapp %}
+    <script src="{{ siteUrlWithVersion('js/app/caja.js') }}"></script>
+    <script>
+        $(function () {
+            Caja.initIndex();
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <h1>Caja</h1>
+
+    <div id="toolbar" class="btn-toolbar" role="group">
+        <a href="{{ urlFor('Caja:recibo') }}" class="btn btn-danger">
+            <i class="glyphicon glyphicon-minus"></i> Recibo
+        </a>
+        <a href="{{ urlFor('Caja:movimiento') }}" class="btn btn-default" id="movimiento">
+            <i class="glyphicon glyphicon-sort"></i> Movimiento de caja
+        </a>
+        <a href="{{ urlFor('Caja:cierre') }}" class="btn btn-success" id="cierre">
+            <i class="glyphicon glyphicon-lock"></i> Cerrar caja
+        </a>
+    </div>
+    <br><br>
+
+    <div role="tabpanel" id="tabs">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation"><a href="#movimientos" role="tab" data-toggle="tab">Movimientos</a></li>
+            <li role="presentation"><a href="#cierres" role="tab" data-toggle="tab">Cierres</a></li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade in active" id="movimientos">
+                <div class="table-responsive">
+                    <table id="tabla-movimientos" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th data-data="fecha" data-class-name="text-right">Fecha</th>
+                                <th data-data="concepto_descripcion">Concepto</th>
+                                <th data-data="detalle">Detalle</th>
+                                <th data-data="cobrador_nombre">Cobrador</th>
+                                <th data-data="cliente">Cliente</th>
+                                <th data-data="entrada" data-class-name="text-right" data-searchable="false">Entrada</th>
+                                <th data-data="salida" data-class-name="text-right" data-searchable="false">Salida</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="cierres">
+                <div class="table-responsive">
+                    <table id="tabla-cierres" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th data-data="id" data-class-name="text-right">Número</th>
+                                <th data-data="fecha" data-class-name="text-right">Fecha</th>
+                                <th data-data="usuario_nombre_completo" data-class-name="nowrap">Realizó</th>
+                                <th data-data="accion" data-searchable="false" data-sortable="false" class="w100"></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

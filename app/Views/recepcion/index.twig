@@ -1,0 +1,35 @@
+{% extends "template/base.twig" %}
+
+{% block jsapp %}
+    <script src="{{ siteUrlWithVersion('js/app/recepcion.js') }}"></script>
+    <script>
+        Recepcion.IndexView();
+    </script>
+{% endblock %}
+
+{% block content %}
+    <h1>Recepciones</h1>
+
+    <div id="toolbar" class="btn-group" role="group">
+        <a href="{{ urlFor('Recepcion:create') }}" class="btn btn-success">
+            <i class="glyphicon glyphicon-plus"></i> Nuevo
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table id="table" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th data-data="id" data-class-name="text-right">Número</th>
+                    <th data-data="fecha" data-class-name="text-right">Ingreso</th>
+                    <th data-data="proveedor_id" data-class-name="text-right">Proveedor</th>
+                    <th data-data="proveedor_nombre">Nombre</th>
+                    <th data-data="comprobante">Comprobante</th>
+                    <th data-data="comprobante_fecha" data-class-name="text-right">Fecha</th>
+                    <th data-data="deposito_nombre" data-class-name="text-right">Deposito</th>
+                    <th data-data="accion" data-sortable="false" data-searchable="false"></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+{% endblock %}

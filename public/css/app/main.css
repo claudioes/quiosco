@@ -1,0 +1,155 @@
+.debe {
+    color: #0075ff;
+}
+
+.haber {
+    color: #ff0000;
+}
+
+.saldo {
+    font-weight: bold;
+}
+
+.saldo-negativo {
+    background-color: rgb(255, 180, 180);
+}
+
+.saldo-positivo {
+    background-color: rgb(160, 255, 120);
+}
+
+.saldo-cero {
+    background-color: rgb(255, 250, 150);
+}
+
+.w100 {
+    width: 100%;
+}
+
+/*
+.btn-toolbar {
+    display: flex;
+}
+*/
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.form-group.required .control-label:after {
+    content: "*";
+    color: rgb(217, 0, 0);
+    font-size: 20px;
+    margin-left: 8px;
+    position: absolute;
+}
+
+.tab-content {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+            box-shadow: 0 1px 1px rgba(0,0,0,.05);
+}
+
+.tab-pane > .table, .tab-pane > .table-responsive > .table {
+    margin-bottom: 0;
+}
+
+textarea.bg-adv {
+  background-color : #d9534f;
+  color: #fff;
+}
+
+table.table-data {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 20px;
+
+}
+
+table.table-data > tbody > tr > td {
+    padding: 5px;
+    line-height: 1.42;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+table.table-data > tbody > tr > td:last-child{
+    width: 100%;
+    max-width: 100%;
+}
+
+table.table-data > tbody > tr > td.title {
+    font-weight: bold;
+    text-align: right;
+    background: #eee;
+}
+
+div.filtro-datatable > .dataTables_length, .dataTables_filter {
+    display: inline-block ;
+}
+
+.dataTables_length select {
+    width: 120px !important; /* Con !important se sobreescribe los valores asignados por datatables.bootstrap.min.css */
+}
+
+.dataTables_filter input {
+    width: 180px !important; /* Con !important se sobreescribe los valores asignados por datatables.bootstrap.min.css */
+}
+
+@media screen and (max-width: 768px){
+    .toolbar-datatable {
+        text-align: center;
+    }
+
+    .filtro-datatable input {
+        width: 100% !important;
+    }
+
+    .filtro-datatable  {
+        float: none !important;
+    }
+}
+
+.table-borderless tbody tr td, .table-borderless tbody tr th, .table-borderless thead tr th {
+    border: none;
+}
+
+h1 {
+    font-size: 28px;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+a.accordion-toggle {
+    display: block;
+}
+
+.accordion-toggle:after {
+    /* symbol for "opening" panels */
+    font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
+    content: "\e114";    /* adjust as needed, taken from bootstrap.css */
+    float: left;        /* adjust as needed */
+    color: grey;         /* adjust as needed */
+    margin-right: 5px;
+}
+
+.accordion-toggle.collapsed:after {
+    /* symbol for "collapsed" panels */
+    content: "\e080";    /* adjust as needed, taken from bootstrap.css */
+}
+
+.has-error .selectize-control {
+    border-color: #843534;
+}
+
+.selectize-dropdown .active {
+    background-color: #337AB7;
+    color: #ffffff;
+}

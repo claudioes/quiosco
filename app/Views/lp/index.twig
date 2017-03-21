@@ -1,0 +1,44 @@
+{% extends "template/base.twig" %}
+
+{% block jsapp %}
+    <script src="{{ siteUrlWithVersion('js/app/lp.js') }}"></script>
+    <script>
+        LP.IndexView();
+    </script>
+{% endblock %}
+
+{% block content %}
+    <h1>Listas de precios</h1>
+
+    <div id="toolbar" class="btn-toolbar" role="toolbar">
+        <div class="btn-group" role="group">
+            <a href="{{ urlFor('LP:create') }}" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> Nueva plantilla</a>
+        </div>
+        <div class="btn-group" role="group">
+            <a href="{{ urlFor('LP:generar') }}" class="btn btn-default">Generar todas las plantillas</a>
+        </div>
+    </div>
+
+    {% if flash.success %}
+        <div class="alert alert-success alert-dismissable" role="alert" id="mensaje">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <strong>Exito!</strong> {{ flash.success }}
+        </div>
+    {% endif %}
+
+    <div class="table-responsive">
+        <table id="table" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th data-data="id" data-class-name="text-right">Código</th>
+                    <th data-data="descripcion">Plantilla</th>
+                    <th data-data="grupo_nombre">Grupo</th>
+                    <th data-data="ultimo_numero" data-class-name="text-right">Último numero</th>
+                    <th data-data="accion" data-sortable="false" data-searchable="false"></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+{% endblock %}

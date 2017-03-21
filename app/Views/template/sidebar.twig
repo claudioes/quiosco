@@ -1,0 +1,22 @@
+{% if sidebar %}
+    <nav class="sidebar">
+        <div class="center">
+            <ul>
+                {% for item in sidebar %}
+                    {% set attr = item.attributes %}
+                    {% set permiso = attr.permiso|trim %}
+
+                    {% if usuario.puede(permiso) %}
+                        {% set itemUrl = urlFor(attr.route) %}
+
+                        <li {{ url.path == itemUrl ? 'class="active"' }}>
+                            <a href="{{ itemUrl }}" data-toggle="tooltip" data-placement="right" title="{{ attr.title }}">
+                                <img src="{{ siteUrl(attr.image) }}" height="40" width="40">
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </nav>
+{% endif %}

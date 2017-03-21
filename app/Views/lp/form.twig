@@ -1,0 +1,113 @@
+{% import 'template/macro/form.twig' as form %}
+{% extends "template/base.twig" %}
+
+{% block jsapp %}
+    <script src="{{ siteUrlWithVersion('js/app/lp.js') }}"></script>
+    <script>
+        LP.FormView();
+    </script>
+{% endblock %}
+
+{% block content %}
+    <h1>{{ lp ? 'Modificando' : 'Nueva' }} plantilla para generar listas de precios</h1>
+
+    <div class="alert alert-danger" role="alert" id="mensaje" style="display:none"></div>
+
+    <form class="form" id="form-lista" action="{{ urlFor('LP:save') }}" method="POST" autocomplete="off">
+        {{ lp ? form.hidden('id', lp.id) }}
+
+        <div class="row">
+            <div class="form-group col-md-12">
+                <button type="submit" class="btn btn-success" style="margin-right:15px;"><i class="glyphicon glyphicon-ok"></i> Guardar</button>
+                <a href="{{ urlFor('LP:index') }}">Cancelar</a>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group required">
+                            {{ form.label('descripcion', 'Descripción', { class: 'control-label' }) }}
+                            {{ form.text('descripcion', lp.descripcion, { class: 'form-control', required: '', autofocus:'' }) }}
+                        </div>
+                        <div class="form-group required">
+                            {{ form.label('grupo', 'Grupo', { class: 'control-label' }) }}
+                            {{ form.select('grupo', grupos, lp.grupo_id, { class: 'form-control', required: '' }) }}
+                        </div>
+                        <div class="form-group required">
+                            {{ form.label('modelo', 'Modelo', { class: 'control-label' }) }}
+                            {{ form.select('modelo', modelos, lp.lp_modelo_id, { class: 'form-control', required: '' }) }}
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Artículos</h3>
+
+                <div id="tbr-seleccionar">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-sm btn-default" type="button" id="btn-articulos-todos" title="Seleccionar todos"><i class="glyphicon glyphicon-check"></i></button>
+                                <button class="btn btn-sm btn-default" type="button" id="btn-articulos-ninguno" title="Deseleccionar todos"><i class="glyphicon glyphicon-unchecked"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-group form-group-sm">
+                                <select class="form-control" id="select-familia">
+                                    <option value="">Todas las familias</option>
+                                    {% for k, n in familias %}
+                                        <option value="{{ k }}">{{ n }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="form-group form-group-sm">
+                                <select class="form-control" id="select-marca">
+                                    <option value="">Todas las marcas</option>
+                                    {% for k, n in marcas %}
+                                        <option value="{{ k }}">{{ n }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table id="tabla-articulos" class="table table-bordered table-hover" data-order="[[ 1, &quot;asc&quot; ]]">
+                        <thead>
+                            <tr>
+                                <th data-class-name="text-center" data-sortable="false" data-searchable="false">
+                                </th>
+                                <th>Código</th>
+                                <th>Descripción</th>
+                                <th>Familia</th>
+                                <th>Marca</th>
+                                <th data-class-name="text-right">Precio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for articulo in articulos %}
+                                <tr>
+                                    <td>
+                                        <div class="checkbox">
+                                            <label>
+                                                <input name="chk-articulo[]" type="checkbox" value="{{ articulo.id }}" {{ articulo.seleccionado ? 'checked' }}>
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td>{{ articulo.codigo }}</td>
+                                    <td>{{ articulo.descripcion }}</td>
+                                    <td>{{ articulo.familia }}</td>
+                                    <td>{{ articulo.marca }}</td>
+                                    <td>{{ articulo.precio }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

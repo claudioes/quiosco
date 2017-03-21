@@ -1,0 +1,40 @@
+{% extends "template/base.twig" %}
+{% import 'template/macro/form.twig' as form %}
+
+{% block jsapp %}
+    <script src="{{ siteUrlWithVersion('js/app/familia.js') }}"></script>
+    <script>
+        Familia.FormView();
+    </script>
+{% endblock %}
+
+{% block content %}
+    <h1>{{ familia ? 'Modificando' : 'Nueva' }} familia</h1>
+
+    <div class="alert alert-danger" role="alert" id="mensaje" style="display:none"></div>
+    <form class="form" id="form" action="{{ urlFor('Familia:save') }}" method="post">
+        {% if familia %}
+            <input type="hidden" name="id" value="{{ familia.id }}">
+        {% endif %}
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        {{ form.label('nombre', 'Nombre', { class:'control-label' }) }}
+                        {{ form.text('nombre', familia.nombre, { class:'form-control', required:'' }) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        {{ form.label('orden', 'Orden', { class:'control-label' }) }}
+                        {{ form.text('orden', familia.orden ? familia.orden : '', { class:'form-control', placeholder:'Automático' }) }}
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                {{ form.submit('btn-guardar', '<i class="glyphicon glyphicon-ok"></i> Guardar', { class:'btn btn-success', style:'margin-right: 15px' }) }}
+                <a href="#" onclick="history.back();">Cancelar</a>
+            </div>
+        </div>
+    </form>
+{% endblock %}

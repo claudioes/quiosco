@@ -1,0 +1,48 @@
+{% extends "template/base.twig" %}
+
+{% block jsapp %}
+    <script src="{{ siteUrlWithVersion('js/app/cheque.js') }}"></script>
+    <script>
+        $(function() {
+            Cheque.initIndex();
+        })
+    </script>
+{% endblock %}
+
+{% block content %}
+    <h1>Cheques</h1>
+
+    <div id="toolbar" class="btn-group" role="group">
+        <a href="{{ urlFor('Cheque:create') }}" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> Nuevo</a>
+    </div>
+
+    {% if flash.success %}
+        <div class="alert alert-success alert-dismissable" role="alert" id="mensaje">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <strong>Exito!</strong> {{ flash.success }}
+        </div>
+    {% endif %}
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="table-responsive">                
+                <table id="table" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Estado</th>
+                            <th>Numero</th>
+                            <th>Banco</th>
+                            <th>CUIT</th>
+                            <th>Fecha</th>
+                            <th>Importe</th>
+                            <th>Vencimiento</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

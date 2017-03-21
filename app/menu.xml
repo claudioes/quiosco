@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<menu>
+	<item title="Ventas">
+		<item title="Clientes" route="Cliente:index" permiso="cliente" />
+		<item title="-" />
+		<item title="Pedidos" route="Pedido:index" permiso="pedido" />
+		<item title="Presupuestos" route="Presupuesto:index" permiso="presupuesto" />
+		<item title="-" />
+		<item title="Caja" route="Caja:index" permiso="caja" />
+		<item title="Cheques" route="Cheque:index" permiso="cheque" />
+	</item>
+	<item title="Stock">
+		<item title="Artículos" route="Articulo:index" permiso="articulo, articulo.limitado" />
+		<item title="Lista de precios" route="LP:index" permiso="articulo.lp" />
+		<item title="-" />
+		<item title="Movimiento" route="Stock:createMovimiento" permiso="stock.movimiento" />
+		<item title="Inventario" route="Stock:createInventario" permiso="stock.inventario" />
+		<item title="Transferencia" route="Stock:createTransferencia" permiso="stock.transferencia" />
+	</item>
+	<item title="Compras">
+		<item title="Proveedores" route="Proveedor:index" permiso="proveedor" />
+		<item title="-" />
+		<item title="Recepciones" route="Recepcion:index" permiso="recepcion" />
+	</item>
+    <item title="Configuración" >
+		<item title="Familias" route="Familia:index" permiso="familia" />
+		<item title="Marcas" route="Marca:index" permiso="marca" />
+		<item title="-" />
+		<item title="Grupos de clientes" route="Grupo:index" permiso="grupo" />
+		<item title="Cobradores" route="Cobrador:index" permiso="cobrador" />
+		<item title="-" />
+		<item title="Usuarios" route="Usuario:index" permiso="admin" />
+	</item>
+</menu>

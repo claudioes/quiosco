@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Presupuesto {{ presupuesto.id }}</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font: normal 10px Tahoma, sans-serif;
+                width: 100%;
+                /* Turn off kerning to prevent odd spacing problem
+                when copying and pasting from PDFs on Windows */
+                text-rendering: optimize-speed;
+            }
+
+            /* Logo */
+            img.logo {
+                width:100%;
+            }
+
+            /* Pie */
+            div.foot {
+                border-top: solid 2px rgb(100, 100, 100);
+            }
+
+            /* Firma */
+            p.signature {
+                padding-top: 5px;
+                border-top: dashed 1px;
+                font-style: italic;
+                text-align: center;
+            }
+
+            /* Tablas */
+            table {
+            	border-collapse: collapse;
+            	border-spacing: 0;
+            }
+
+            /* Tabla de cabecera */
+            table.head {
+                margin: 5px 0 5px 0;
+            }
+
+            table.head td {
+                padding: 4px;
+                vertical-align: top;
+            }
+
+            /* Tabla de detalles */
+            table.detail thead th {
+                background-color: #c8c8c8;
+                border: solid 1px #636363;
+                padding: 5px;
+            }
+
+            table.detail tbody tr {
+                border-bottom: solid 1px #c8c8c8;
+            }
+
+            table.detail tbody td {
+                padding: 4px;
+            }
+
+            /* Tabla de totales */
+            table.total {
+                width:100%;
+            }
+
+            table.total td {
+                padding: 4px;
+            }
+
+            /* General */
+            .nowrap {
+                white-space: nowrap;
+            }
+
+            .text-right {
+                text-align: right !important;
+            }
+
+            .text-center {
+                text-align: center !important;
+            }
+
+            .w100 {
+                width: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        {% block content %} {% endblock %}
+    </body>
+</html>

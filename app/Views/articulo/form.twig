@@ -1,0 +1,177 @@
+{% import "template/macro/form.twig" as form %}
+{% extends "template/base.twig" %}
+
+{% block jsapp %}
+    <script src="{{ siteUrlWithVersion('js/app/articulo.js') }}"></script>
+    <script>
+        $(function () {
+            App.Articulo.Form();
+        })
+    </script>
+{% endblock %}
+
+{% block content %}
+    <h1>{{ articulo ? 'Modificando': 'Nuevo' }} artículo</h1>
+
+    <div class="alert alert-danger" role="alert" id="mensaje" style="display:none"></div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <form class="form" id="form" action="{{ urlFor('Articulo:save') }}" method="post" autocomplete="off">
+                {% if articulo %}
+                    {{ form.hidden('id', articulo.id) }}
+                {% endif %}
+
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <fieldset>
+                            <div class="row">
+                                <div class="form-group required col-md-2">
+                                    {{ form.label('codigo', 'Código', { class:'control-label' }) }}
+                                    {{ form.text('codigo', articulo.codigo, { class:'form-control', required:'', autofocus:'' }) }}
+                                </div>
+                                <div class="form-group required col-md-10">
+                                    {{ form.label('descripcion', 'Descripción', { class:'control-label' }) }}
+                                    {{ form.text('descripcion', articulo.descripcion, { class:'form-control', required:'' }) }}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group required col-md-12">
+                                    {{ form.label('marca', 'Marca', { class:'control-label' }) }}
+                                    {{ form.select('marca', marcas, articulo.marca_id, { class:'form-control', required:'' }) }}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group required col-md-12">
+                                    {{ form.label('familia', 'Familia', { class:'control-label' }) }}
+                                    {{ form.select('familia', familias, articulo.familia_id, { class:'form-control', required:'' }) }}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group required col-md-12">
+                                    {{ form.label('proveedor', 'Proveedor', { class:'control-label' }) }}
+                                    {{ form.select('proveedor', proveedores, articulo.proveedor_id, { class:'form-control', required:'' }) }}
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    {{ form.label('costo', 'Costo', { class:'control-label' }) }}
+                                    <div class="input-group">
+                                        <span class="input-group-addon">$</span>
+                                        {{ form.text('costo', articulo.costo, { class:'form-control calcular', placeholder:'0.00' }) }}
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    {{ form.label('ganancia', 'Ganancia', { class:'control-label' }) }}
+                                    <div class="input-group">
+                                        <span class="input-group-addon">%</span>
+                                        {{ form.text('ganancia', articulo.ganancia, { class:'form-control calcular', placeholder:'0.00' }) }}
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    {{ form.label('precio', 'Precio de venta', { class:'control-label' }) }}
+                                    <div class="input-group">
+                                        <span class="input-group-addon">%</span>
+                                        {{ form.text('precio', articulo.precio, { class:'form-control', placeholder:'0.00' }) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    {{ form.label('minimo', 'Mínimo', { class:'control-label' }) }}
+                                    {{ form.text('minimo', articulo.stock_minimo, { class:'form-control', placeholder:'0.00' }) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    {{ form.label('notas', 'Notas', { class:'control-label' }) }}
+                                    {{ form.textarea('notas', articulo.notas, { class:'form-control', rows:'4' }) }}
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="panel-footer">
+                        <button type="submit" class="btn btn-success" style="margin-right: 1em;"><i class="glyphicon glyphicon-ok" style="margin-right: 0.5em;"></i>Guardar</button>
+                        <a href="#" onclick="history.back();">Cancelar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6">
+            {% if articulo is not null %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Stock
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Deposito</th>
+                                    <th>Cantidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set total = 0 %}
+                                {% for deposito in stock %}
+                                    <tr>
+                                        <td>{{ deposito.nombre }}</td>
+                                        {% if deposito.cantidad != 0 %}
+                                            <td class="text-right">{{ deposito.cantidad|number_format(0, ',', '.') }}</td>
+                                        {%  else %}
+                                            <td class="text-right"><span class="label label-default">Sin stock</span></td>
+                                        {% endif %}
+                                        {% set total = total + deposito.cantidad %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Total</th>
+                                    <th class="text-right">{{ total|number_format(0, ',', '.') }}</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Movimientos
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                {{ form.label('movimientos-desde', 'Desde el') }}
+                                <div class="input-group">
+                                    {{ form.text('movimientos-desde', "first day of this month"|date('d/m/Y'), { class:'form-control datepicker' }) }}
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                {{ form.label('movimientos-deposito', 'Deposito') }}
+                                {{ form.select('movimientos-deposito', depositos, null, { class:'form-control' }, 'Todos los depositos') }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 table-responsive">
+                                <div id="movimientos"></div>
+                            </div>
+                        </div>
+                    </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Cierre de caja {{ cierre.id }}</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font: normal 11px tahoma, helvetica, arial, sans-serif;
+            }
+
+            table, tr, td, th, tbody, thead, tfoot {
+                page-break-inside: avoid !important;
+            }
+
+            table {
+            	border-collapse: collapse;
+            	border-spacing: 0;
+            }
+
+            table th, td {
+                padding: 4px;
+            }
+
+            table.head {
+                margin: 10px 0 10px 0;
+            }
+
+            table.head td {
+                vertical-align: text-top;
+            }
+
+            table.detail tbody td {
+                border: solid 1px rgb(200, 200, 200);
+            }
+
+            table tr.salida {
+                color: red;
+            }
+
+            table tr.divisor {
+                border-top: solid 2px rgb(100, 100, 100);
+            }
+
+            table.detail thead th {
+                background-color: rgb(200, 200, 200);
+                border: solid 2px rgb(100, 100, 100);
+                padding: 5px;
+            }
+
+            .nowrap {
+                white-space: nowrap;
+            }
+
+            .text-right {
+                text-align: right !important;
+            }
+
+            .w100 {
+                width: 100%;
+            }
+
+            img.logo {
+                width:100%;
+            }
+        </style>
+    </head>
+    <body onload="window.print()">
+        <div class="w100">
+            <table class="head">
+                <tr>
+                    <td class="w100">CIERRE DE CAJA Nº {{ cierre.id }}</td>
+                    <td class="text-right nowrap">FECHA: {{ cierre.fecha|date("d/m/Y") }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2">DESDE EL {{ desde|date("d/m/Y") }} AL {{ hasta|date("d/m/Y") }}</td>
+                </tr>
+            </table>
+
+            <table class="detail">
+                <thead>
+                    <tr>
+                        <th>Orden</th>
+                        <th>Fecha</th>
+                        <th>Concepto</th>
+                        <th class="w100">Detalle</th>
+                        <th>Cliente</th>
+                        <th>Cobrador</th>
+                        <th>Importe</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for linea in detalle %}
+                        <tr class=" {{ linea.tipo == 'E' ? 'entrada' : 'salida' }}">
+                            <td class="text-right">{{ loop.index }}</td>
+                            <td class="text-right">{{ linea.fecha|date("d/m/Y") }}</td>
+                            <td>{{ linea.concepto_descripcion }}</td>
+                            <td>{{ linea.detalle }}</td>
+                            <td class="nowrap">{{ linea.cliente_nombre }}</td>
+                            <td class="nowrap">{{ linea.cobrador_nombre }}</td>
+                            <td class="text-right nowrap">$ {{ linea.tipo == 'S' ? '-' }}{{ linea.importe|number_format(2, ',', '.') }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            <table class="detail">
+                <thead>
+                    <tr>
+                        <th>Cobrador</th>
+                        <th>Importe</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for linea in cobradores %}
+                        <tr>
+                            <td class="w100">{{ linea.cobrador }}</td>
+                            <td class="text-right nowrap">$ {{ linea.importe }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            <table>
+                <tr class="divisor">
+                    <td class="text-right w100">Total entradas</td>
+                    <td class="text-right nowrap">$ {{ total.entrada|number_format(2, ',', '.') }}</td>
+                </tr>
+                <tr class="salida">
+                    <td class="text-right w100">Total salidas</td>
+                    <td class="text-right nowrap">$ -{{ total.salida|number_format(2, ',', '.') }}</td>
+                </tr>
+                <tr class="divisor">
+                    <td class="text-right w100">Saldo final</td>
+                    <td class="text-right nowrap">$ {{ (total.entrada - total.salida)|number_format(2, ',', '.') }}</td>
+                </tr>
+            </table>
+        </div>
+    </body>
+</html>

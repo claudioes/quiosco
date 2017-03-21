@@ -1,0 +1,97 @@
+<div class="row">
+    <div class="col-sm-6">
+        <table class="table-data">
+            <tbody>
+                <tr>
+                    <td class="title">Número</td>
+                    <td>{{ recibo.id }}</td>
+                </tr>
+                <tr>
+                    <td class="title">Cliente</td>
+                    <td>{{ recibo.cliente_id }} - {{ recibo.cliente.nombre }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-sm-6">
+        <table class="table-data">
+            <tbody>
+                <tr>
+                    <td class="title">Fecha</td>
+                    <td>{{ recibo.fecha|date('d/m/Y') }}</td>
+                </tr>
+                <tr>
+                    <td class="title">Cobrador</td>
+                    <td>{{ recibo.cobrador_id }} - {{ recibo.cobrador.nombre }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Número</th>
+                <th>Banco</th>
+                <th>CUIT</th>
+                <th>Fecha</th>
+                <th>Importe</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cheque in cheques %}
+                <tr>
+                    <td class="text-right">{{ cheque.numero }}</td>
+                    <td>{{ cheque.banco.nombre }}</td>
+                    <td>{{ cheque.cuit }}</td>
+                    <td class="text-right">{{ cheque.fecha|date('d/m/Y') }}</td>
+                    <td class="text-right">$ {{ cheque.importe|number_format(2, ',', '.') }}</td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="4" class="text-right"><strong>Cheques</strong></td>
+                <td class="text-right">$ {{ recibo.cheques|number_format(2, ',', '.') }}</td>
+            </tr>
+            <tr>
+                <td colspan="4" class="text-right"><strong>Efectivo</strong></td>
+                <td class="text-right">$ {{ recibo.efectivo|number_format(2, ',', '.') }}</td>
+            </tr>
+            <tr>
+                <td colspan="4" class="text-right"><strong>Deposito</strong></td>
+                <td class="text-right">$ {{ recibo.deposito|number_format(2, ',', '.') }}</td>
+            </tr>
+            <tr>
+                <td colspan="4" class="text-right"><strong>Mercadería</strong></td>
+                <td class="text-right">$ {{ recibo.mercaderia|number_format(2, ',', '.') }}</td>
+            </tr>
+            <tr>
+                <td colspan="4" class="text-right"><strong>Total</strong></td>
+                <td class="text-right">
+                    {% set totalRecibo = recibo.cheques + recibo.efectivo + recibo.deposito + recibo.mercaderia %}
+                    $ {{ totalRecibo|number_format(2, ',', '.') }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="row">
+    <div class="col-sm-6">
+        <p><strong>Notas</strong></p>
+        <p>{{ recibo.notas }}</p>
+    </div>
+</div>
+
+<hr>
+
+<div class="row">
+    <div class="col-sm-12">
+        {% if usuario.esAdministrador %}
+            <button class="btn btn-danger" id="btn-anular-recibo" data-url="{{ urlFor('Caja:deleteRecibo', {id:recibo.id }) }}">
+                <i class="glyphicon glyphicon-trash"></i> Eliminar
+            </button>
+        {% endif %}
+    </div>
+</div>

@@ -1,0 +1,71 @@
+{% import "template/macro/form.twig" as form %}
+{% extends "template/base.twig" %}
+
+{% block jsapp %}
+    <script src="{{ siteUrlWithVersion('js/app/articulo.js') }}"></script>
+    <script>
+        $(function () {
+            App.Articulo.Aumento();
+        })
+    </script>
+{% endblock %}
+
+{% block content %}
+<h1>Aumentos</h1>
+<div class="alert alert-danger" role="alert" id="mensaje" style="display:none"></div>
+<form class="form" id="form" action="{{ urlFor('Articulo:aumento') }}" method="post" autocomplete:"off">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="form-group col-sm-8 required" >
+                        {{ form.label('accion', 'Acción', { class:'control-label' }) }}
+                        {{ form.select('accion', opciones, null, { class:'form-control', required:'', autofocus:'' }) }}
+                    </div>
+                    <div class="form-group col-sm-4" id="div-valor">
+                        {{ form.label('valor', 'Porcentaje', { class:'control-label', id:'label-valor' }) }}
+                        {{ form.text('valor', null, { class:'form-control', required:'' }) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-12">
+                        {{ form.label('marca', 'Marca', { class:'control-label' }) }}
+                        <select id="marca" name="marca" class="form-control selectize">
+                            <option value="" selected>Todas las marcas</option>
+                            {% for key, name in marcas %}
+                                <option value="{{ key }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-12">
+                        {{ form.label('familia', 'Familia', { class:'control-label' }) }}
+                        <select id="familia" name="familia" class="form-control selectize">
+                            <option value="" selected>Todas las familias</option>
+                            {% for key, name in familias %}
+                                <option value="{{ key }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-12">
+                        {{ form.label('proveedor', 'Proveedor', { class:'control-label' }) }}
+                        <select id="proveedor" name="proveedor" class="form-control selectize">
+                            <option value="" selected>Todos los proveedores</option>
+                            {% for key, name in proveedores %}
+                                <option value="{{ key }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <button type="submit" class="btn btn-success" style="margin-right: 10px;">Aceptar</button>
+            <a href="#" onclick="history.back();">Cancelar</a>
+        </div>
+    </div>
+</form>
+{% endblock %}

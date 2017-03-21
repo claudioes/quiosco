@@ -1,0 +1,130 @@
+{% import "template/macro/form.twig" as form %}
+{% extends "template/base.twig" %}
+
+{% block jsapp %}
+    <script src="{{ siteUrlWithVersion('js/app/modal.js') }}"></script>
+    <script src="{{ siteUrlWithVersion('js/app/presupuesto.js') }}"></script>
+    <script>
+        Presupuesto.FormView();
+    </script>
+{% endblock %}
+
+{% block content %}
+    {% if pedidoId %}
+        <h1>Nuevo presupuesto (desde pedido nº {{ pedidoId }})</h1>
+    {% else %}
+        <h1>Nuevo presupuesto</h1>
+    {% endif %}
+
+    <div id="mensaje" class="alert alert-danger" role="alert" style="display:none;"></div>
+    <div id="adv" class="alert alert-danger" role="alert" style="display:none;"></div>
+
+    <form id="form" action="{{ urlFor('Presupuesto:save') }}" method="post" autocomplete="off">
+        {{ form.hidden('saldo', 0) }}
+        {% if pedidoId %}
+            {{ form.hidden('pedido-id', pedidoId) }}
+        {% endif %}
+        <div class="row">
+            <div class="col-md-12 col-lg-3">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="control-label" for="cliente">Cliente</label>
+                            {% if cliente %}
+                                {{ form.hidden('cliente', cliente.id) }}
+                                {{ form.text('cliente-nombre', "(%s) %s"|format(cliente.codigo, cliente.nombre), { class: 'form-control', readonly: '' }) }}
+                            {% else %}
+                                <select id="cliente" name="cliente" class="form-control">
+                                    <option></option>
+                                    {% for c in clientes %}
+                                        <option value="{{ c.id }}">({{ c.codigo }}) {{ c.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            {% endif %}
+                        </div>
+                        <div id="info"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-9">
+                <div class="panel panel-default">
+                    <div class="table-responsive">
+                        <table id="lineas" class="table">
+                            <thead>
+                                <tr>
+                                    <th width="120px">Código</th>
+                                    <th>Descripción</th>
+                                    <th width="110px">Cantidad</th>
+                                    <th width="100px">Precio</th>
+                                    <th width="80px">Descuento</th>
+                                    <th width="100px">Importe</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for d in detalle %}
+                                    <tr>
+                                        <input type="hidden" name="detalle-tipo[]" value="N">
+                                        <input type="hidden" name="detalle-articulo-id[]" value="{{ d.articulo_id }}">
+                                        <td>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control text-right" name="detalle-codigo[]" value="{{ d.codigo }}" readonly>
+                                                <span class="input-group-btn">
+                                                    <a href="#" class="btn btn-danger eliminar">
+                                                        <i class="glyphicon glyphicon-minus"></i>
+                                                    </a>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td><textarea rows="1" class="form-control" name="detalle-descripcion[]" readonly>{{ d.descripcion }}</textarea></td>
+                                        <td><input type="text" class="form-control text-right calcular" name="detalle-precio[]" value="{{ d.precio }}"></td>
+                                        <td><input type="text" class="form-control text-right calcular" name="detalle-descuento[]" value="{{ d.descuento1 }}"></td>
+                                        <td><input type="text" class="form-control text-right" name="detalle-importe[]" readonly></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="codigo" placeholder="Buscar código...">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default" type="button" id="buscar-articulo">
+                                                    <i class="glyphicon glyphicon-search"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td colspan="4"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="7" class="text-right">Total</td>
+                                    <td class="text-right">
+                                        <span id="lbl-total"></span>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    {{ form.label('notas', 'Notas') }}
+                                    {{ form.textarea('notas', null, { class:'form-control' }) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-offset-3 col-lg-9">
+                <div class="form-group">
+                    {{ form.submit('btn-guardar', '<i class="glyphicon glyphicon-ok"></i> Guardar', { class:'btn btn-success', style:'margin-right:10px' }) }}
+                    <a href="#" onclick="history.back();">Cancelar</a>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

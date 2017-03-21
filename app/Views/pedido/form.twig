@@ -1,0 +1,73 @@
+{% import "template/macro/form.twig" as form %}
+{% extends "template/base.twig" %}
+
+{% block jsapp %}
+    <script src="{{ siteUrlWithVersion('js/app/modal.js') }}"></script>
+    <script src="{{ siteUrlWithVersion('js/app/pedido.js') }}"></script>
+    <script>
+        $(function () {
+            App.Pedido.Form();
+        })
+    </script>
+{% endblock %}
+
+{% block content %}
+    <h1>Nuevo pedido</h1>
+
+    <div class="alert alert-danger" role="alert" id="mensaje" style="display:none"></div>
+
+    <form id="form" action="{{ urlFor('Pedido:save') }}" method="post">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            {{ form.label('cliente', 'Cliente', { class: 'control-label' }) }}
+                            <select id="cliente" name="cliente" class="form-control">
+                                <option></option>
+                                {% for cliente in clientes %}
+                                    <option value="{{ cliente.id }}">({{ cliente.codigo }}) {{ cliente.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div id="info-cliente"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="panel panel-default">
+                    <div class="table-responsive">
+                        <table id="lineas" class="table">
+                            <thead>
+                                <tr>
+                                    <th width="200px">Código</th>
+                                    <th>Descripción</th>
+                                    <th width="100px">Cantidad</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="codigo" placeholder="Buscar">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default" type="button" id="btn-buscar-articulo"><i class="glyphicon glyphicon-search"></i></button>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-12">
+                <button id="btn-ok" type="submit" class="btn btn-success" style="margin-right: 15px;"><i class="glyphicon glyphicon-ok"></i> Guardar</button>
+                <a href="#" onclick="history.back();">Cancelar</a>
+            </div>
+        </div>
+    </form>
+{% endblock %}

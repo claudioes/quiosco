@@ -1,0 +1,70 @@
+{% extends "template/base.twig" %}
+{% import 'template/macro/form.twig' as form %}
+
+{% block jsapp %}
+    <script src="{{ siteUrlWithVersion('js/app/cheque.js') }}"></script>
+    <script>
+        Cheque.initForm();
+    </script>
+{% endblock %}
+
+{% block content %}
+    <h1>{{ cheque ? 'Modificando' : 'Nuevo' }} cheque</h1>
+
+    <div class="alert alert-danger" role="alert" id="mensaje" style="display:none"></div>
+
+    <form class="form" id="form" action="{{ urlFor('Cheque:save') }}" method="post" autocomplete="off">
+        {% if cheque %}
+            {{ form.hidden('id', cheque.id) }}
+        {% endif %}
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="form-group col-md-2 required">
+                        {{ form.label('numero', 'Número', { class:'control-label' }) }}
+                        {{ form.text('numero', cheque.numero, { class:'form-control', required:'', autofocus:'' }) }}
+                    </div>
+                    <div class="form-group col-md-2 required">
+                        {{ form.label('estado', 'Estado', { class:'control-label' }) }}
+                        {{ form.select('estado', estados, cheque.estado, { class:'form-control', required:'' }) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4 required">
+                        {{ form.label('banco', 'Banco', { class:'control-label' }) }}
+                        {{ form.select('banco', bancos, cheque.banco_id, { class:'form-control selectize', required:'' }) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        {{ form.label('cuit', 'CUIT', { class:'control-label' }) }}
+                        {{ form.text('cuit', cheque.cuit, { class:'form-control' }) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4 required">
+                        {{ form.label('fecha', 'Fecha', { class:'control-label' }) }}
+                        <div class="input-group">
+                            {{ form.text('fecha', cheque.fecha|date('d/m/Y'), { class:'form-control date', required:'' }) }}
+                            <div class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4 required">
+                        {{ form.label('importe', 'Importe', { class:'control-label' }) }}
+                        <div class="input-group">
+                            <div class="input-group-addon">$</div>
+                            {{ form.text('importe', cheque.importe, { class:'form-control', required:'' }) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                {{ form.submit('btn-guardar', '<i class="glyphicon glyphicon-ok"></i> Guardar', { class:'btn btn-success', style:'margin-right: 15px' }) }}
+                <a href="#" onclick="history.back();">Cancelar</a>
+            </div>
+        </div>
+    </form>
+{% endblock %}

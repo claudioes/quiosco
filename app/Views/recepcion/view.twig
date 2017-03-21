@@ -1,0 +1,52 @@
+<h3 class="text-right">
+    Recepción Nº {{ recepcion.id }}<br>
+    <small>Ingresado el {{ recepcion.fecha }}</small>
+</h3>
+<br>
+<div class="row">
+    <div class="col-md-6">
+        <table class="table-data">
+            <tr>
+                <td class="title">Proveedor</td>
+                <td>{{ proveedor.id }} - {{ proveedor.nombre }}</td>
+            </tr>
+            <tr>
+                <td class="title">Comprobante</td>
+                <td>{{ recepcion.comprobante_fecha|date('d/m/y') }} - {{ recepcion.comprobante_tipo }} {{ recepcion.comprobante_numero }}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-md-6">
+        <table class="table-data">
+            <tr>
+                <td class="title">Depósito</td>
+                <td>{{ deposito.nombre }}</td>
+            </tr>
+            <tr>
+                <td class="title">Usuario</td>
+                <td>{{ usuario.apellido }}, {{ usuario.nombre }}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Código</th>
+            <th>Descripción</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in detalle %}
+            <tr>
+                <td class="text-right">{{ item.codigo }}</td>
+                <td>{{ item.descripcion }}</td>
+                <td class="text-right">{{ item.cantidad }}</td>
+                <td class="text-right nowrap">$ {{ item.precio|number_format(2, ',', '.') }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

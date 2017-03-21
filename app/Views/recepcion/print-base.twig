@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Pedido {{ pedido.id }}</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font: normal 11px tahoma, helvetica, arial, sans-serif;
+            }
+
+            table {
+            	border-collapse: collapse;
+            	border-spacing: 0;
+            }
+
+            table th, td {
+                padding: 4px;
+            }
+
+            table.cabecera {
+                margin: 10px 0 10px 0;
+            }
+
+            table.cabecera td {
+                vertical-align: top;
+            }
+
+            table.detalle tbody tr {
+                border-bottom: solid 1px rgb(200, 200, 200);
+            }
+
+            table.detalle thead th {
+                background-color: rgb(200, 200, 200);
+                border: solid 2px rgb(100, 100, 100);
+                padding: 5px;
+            }
+
+            table.detalle tfoot tr {
+                border-bottom: none;
+            }
+
+            .nowrap {
+                white-space: nowrap;
+            }
+
+            .text-right {
+                text-align: right !important;
+            }
+
+            .text-center {
+                text-align: center !important;
+            }
+
+            .w100 {
+                width: 100%;
+            }
+
+            img.logo {
+                width:100%;
+            }
+
+            div.container {
+                width: 100%;
+            }
+
+            div.copy {
+                width: 50%;
+                display: inline-block;
+            }
+
+            div.content-left {
+                padding-right: 10px;
+            }
+
+            div.content-right {
+                padding-left: 10px;
+            }
+        </style>
+    </head>
+    <body onload="window.print()">
+        <div class="container">
+            <div class="copy">
+                <div class="content-left">
+                    {% block content %} {% endblock %}
+                </div>
+            </div><!--
+            --><div class="copy">
+                <div class="content-right">
+                    {{ block('content') }}
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

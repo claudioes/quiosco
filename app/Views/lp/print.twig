@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Lista de precios</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font: normal 11px tahoma, helvetica, arial, sans-serif;
+            }
+            h1 {
+                font-size: 30px;
+                font-weight: bold;
+            }
+            .text-right {
+                text-align: right;
+            }
+            .text-center {
+                text-align: center;
+            }
+            .w100 {
+                width: 100%;
+            }
+            .nowrap {
+                white-space: nowrap;
+            }
+            td.familia {
+                text-align: center;
+                font-weight: bold;
+                background: #818181;
+                color: #fff;
+                font-size: 18px;
+            }
+            td.marca {
+                text-align: center;
+                font-weight: bold;
+                background: #dedede;
+                font-size: 14px;
+            }
+            div.container {
+                width: 100%;
+            }
+            table.articulos {
+                width: 100%;
+                border-collapse: collapse;
+            	border-spacing: 0;
+            }
+            table.articulos td, th {
+                padding: 4px;
+            }
+            table.articulos tbody td {
+                border: solid 1px rgb(200, 200, 200);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <!-- CABECERA -->
+            {% include  template_from_string(cabecera) %}
+
+            <!-- DETALLE -->
+            <table class="articulos">
+                {% for articulo in articulos %}
+                    {% if familia != articulo.familia_id %}
+                        {% set familia = articulo.familia_id%}
+                        <tr><td colspan="3" class="familia">{{ articulo.familia_nombre }}</td></tr>
+                    {% endif %}
+                    {% if marca != articulo.marca_id %}
+                        {% set marca = articulo.marca_id%}
+                        <tr><td colspan="3" class="marca" >{{ articulo.marca_nombre }}</td></tr>
+                    {% endif %}
+                    <tr>
+                        <td class="text-right">{{ articulo.codigo }}</td>
+                        <td>{{ articulo.descripcion }}</td>
+                        <td class="text-right nowrap">$ {{ (articulo.precio * (1+recargo/100))|number_format(2, ',', '.') }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+
+            <!-- NOTAS -->
+            <h3>Notas</h3>
+            {{ notas|raw }}
+        </div>
+    </body>
+</html>

@@ -1,0 +1,68 @@
+{% extends "template/base.twig" %}
+{% block jsapp %}
+    <script src="{{ siteUrlWithVersion('js/app/grupo.js') }}"></script>
+    <script>
+        Grupo.FormView();
+    </script>
+{% endblock %}
+{% block content %}
+    <h1>{{ grupo ? 'Modificando' : 'Nuevo' }} grupo</h1>
+    <div class="alert alert-danger" role="alert" id="mensaje" style="display:none"></div>
+    <form class="form" id="form" action="{{ urlFor('Grupo:save') }}" method="post">
+        {% if grupo %}
+            <input type="hidden" name="id" value="{{ grupo.id }}">
+        {% endif %}
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label class="control-label" for="nombre">Nombre</label>
+                        <input type="text" name="nombre" class="form-control" value="{{ grupo.nombre }}" required autofocus autocomplete="off">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label class="control-label" for="descuento">Descuento</label>
+                        <input type="text" name="descuento" class="form-control" value="{{ grupo.descuento }}" placeholder="0.00" autocomplete="off">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label class="control-label" for="recargo">Recargo</label>
+                        <input type="text" name="recargo" class="form-control" value="{{ grupo.recargo }}" placeholder="0.00" autocomplete="off">
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <button type="submit" class="btn btn-success" style="margin-right: 1em;"><i class="glyphicon glyphicon-ok" style="margin-right: 0.5em;"></i>Guardar</button>
+                <a href="#" onclick="history.back();">Cancelar</a>
+            </div>
+        </div>
+    </form>
+    
+    {% if clientes|length > 0 %}
+        <div class="panel panel-default">
+            <div class="panel-heading">{{ clientes|length }} clientes asociados</div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="clientes">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th style="width:100%">Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cliente in clientes %}
+                                <tr>
+                                    <td><a href="{{ urlFor('Cliente:edit', {'id': cliente.id}) }}">{{ cliente.codigo }}</a></td>
+                                    <td>{{ cliente.nombre }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

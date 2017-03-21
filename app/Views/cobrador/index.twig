@@ -1,0 +1,31 @@
+{% extends "template/base.twig" %}
+
+{% block jsapp %}
+    <script src="{{ siteUrlWithVersion('js/app/cobrador.js') }}"></script>
+    <script>
+        Cobrador.IndexView();
+    </script>
+{% endblock %}
+
+{% block content %}
+    <h1>Cobradores</h1>
+
+    <div id="toolbar" class="btn-group" role="group">
+        <a href="{{ urlFor('Cobrador:create') }}" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> Nuevo</a>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table id="table" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th class="w100">Nombre</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

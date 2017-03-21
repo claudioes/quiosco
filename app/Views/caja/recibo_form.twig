@@ -1,0 +1,113 @@
+{% import 'template/macro/form.twig' as form %}
+{% extends "template/base.twig" %}
+
+{% block jsapp %}
+    <script src="{{ siteUrlWithVersion('js/app/caja.js') }}"></script>
+    <script>
+        $(function () {
+            Caja.initRecibo();
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <h1>Recibo</h1>
+
+    <div class="alert alert-danger" role="alert" id="mensaje" style="display:none;"></div>
+
+    <form class="form" id="form" action="{{ urlFor('Caja:saveRecibo') }}" method="post" autocomplete="off">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="form-group required">
+                            {{ form.label('cliente', 'Cliente', { class: 'control-label' }) }}
+                            {{ form.select('cliente', clientes, null, { class: 'form-control selectize', required: '', autofocus: '' }) }}
+                        </div>
+                        <div class="form-group required">
+                            {{ form.label('cobrador', 'Cobrador', { class: 'control-label' }) }}
+                            {{ form.select('cobrador', cobradores, null, { class: 'form-control', required: '' }) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-9">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h3>Forma de pago</h3>
+
+                        <div class="form-inline" style="margin-bottom:10px;">
+                            <div class="form-group">
+                                {{ form.text('cheque-numero', null, {class:'form-control text-right cheque', placeholder:'Número', style:'width:120px'}) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form.select('cheque-banco', bancos, null, {class:'form-control cheque', placeholder:'Banco', style:'width:200px'}) }}
+                            </div>
+                            <div class="form-group">
+                                {{ form.text('cheque-cuit', null, {class:'form-control cheque', placeholder:'CUIT', style:'width:120px'}) }}</td>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    {{ form.text('cheque-fecha', null, {class:'form-control text-right fecha cheque', placeholder:'Fecha', style:'width:120px'}) }}
+                                    <div class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-addon">$</div>
+                                    {{ form.text('cheque-importe', null, {class:'form-control text-right cheque', placeholder:'Importe', style:'width:120px'}) }}
+                                </div>
+                            </div>
+                            {{ form.button('agregar-cheque', '<i class="glyphicon glyphicon-plus"></i> Agregar', {class:'btn btn-success'}) }}
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="tabla-cheques">
+                                <thead>
+                                    <tr>
+                                        <th>Número</th>
+                                        <th>Banco</th>
+                                        <th>CUIT</th>
+                                        <th>Fecha</th>
+                                        <th>Importe</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                {{ form.label('total-cheques', 'Cheques', {class:'col-md-9 control-label'}) }}
+                                <div class="col-md-3">
+                                    {{ form.text('total-cheques', null, {class:'form-control text-right importe', disabled:'' }) }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {{ form.label('total-efectivo', 'Efectivo', {class:'col-md-9 control-label'}) }}
+                                <div class="col-md-3">
+                                    {{ form.text('total-efectivo', null, {class:'form-control text-right importe'}) }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {{ form.label('total', 'Total', {class:'col-md-9 control-label'}) }}
+                                <div class="col-md-3">
+                                    {{ form.text('total', null, {class:'form-control text-right', disabled:'' }) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-success" style="margin-right: 15px;"><i class="glyphicon glyphicon-ok"></i> Guardar</button>
+                <a href="#" onclick="history.back();">Cancelar</a>
+            </div>
+        </div>
+    </form>
+{% endblock %}

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<menu>
+	<item title="Pedidos" route="Pedido:index" image="images/menu/pedidos.png" permiso="pedido" />
+	<item title="Presupuestos" route="Presupuesto:index" image="images/menu/presupuestos.png" permiso="presupuesto" />
+	<item title="Artículos" route="Articulo:index" image="images/menu/articulos.png" permiso="articulo, articulo.limitado" />
+	<item title="Clientes" route="Cliente:index" image="images/menu/clientes.png" permiso="cliente" />
+	<item title="Caja" route="Caja:index" image="images/menu/caja.png" permiso="caja" />
+</menu>

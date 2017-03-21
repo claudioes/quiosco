@@ -1,0 +1,121 @@
+<div class="row">
+    <div class="form-group col-sm-2 required">
+        {{ form.label('codigo', 'Código', { class:'control-label' }) }}
+        {{ form.text('codigo', cliente.codigo, { class:'form-control', required:'', autofocus:'' }) }}
+    </div>
+    <div class="form-group col-sm-10 required">
+        {{ form.label('nombre', 'Nombre', { class:'control-label' }) }}
+        {{ form.text('nombre', cliente.nombre, { class:'form-control', required:'' }) }}
+    </div>
+</div>
+
+<div class="row">
+    <div class="form-group col-sm-8">
+        {{ form.label('razon', 'Razón social', { class:'control-label' }) }}
+        {{ form.text('razon', cliente.razon, { class:'form-control' }) }}
+    </div>
+    <div class="form-group col-sm-4">
+        {{ form.label('cuit', 'CUIT', { class: 'control-label' }) }}
+        <div class="input-group">
+            {{ form.text('cuit', cliente.cuit, { class: 'form-control' }) }}
+            <span class="input-group-btn">
+                {{ form.button('buscar-cuit', '<i class="glyphicon glyphicon-refresh"></i>', { class: 'btn btn-default', title: 'Buscar y completar datos del CUIT' }) }}
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="form-group col-sm-6">
+        {{ form.label('telefono', 'Teléfono', { class:'control-label' }) }}
+        {{ form.text('telefono', cliente.telefono, { class:'form-control' }) }}
+    </div>
+    <div class="form-group col-sm-6">
+        {{ form.label('email', 'E-Mail', { class:'control-label' }) }}
+        {{ form.text('email', cliente.email, { class:'form-control' }) }}
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">Días de visita</div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="form-group col-sm-12">
+                {% for key, dia in dias %}
+                    {{ form.checkbox(dia, cliente.dias_visita b-and key, { name: 'dias_visita[]', value: key }) }}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">Dirección de facturación</div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="form-group col-sm-12">
+                {{ form.label('domicilio', 'Domicilio', { class:'control-label' }) }}
+                {{ form.text('domicilio', cliente.domicilio, { class:'form-control' }) }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-sm-8">
+                {{ form.label('localidad', 'Localidad', { class:'control-label' }) }}
+                {{ form.text('localidad', cliente.localidad, { class:'form-control' }) }}
+            </div>
+            <div class="form-group col-sm-4">
+                {{ form.label('cp', 'Cód. Postal', { class:'control-label' }) }}
+                {{ form.text('cp', cliente.cp, { class:'form-control' }) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">Dirección de entrega</div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="form-group col-sm-12">
+                {{ form.label('domicilio-entrega', 'Domicilio', { class: 'control-label' }) }}
+                {{ form.text('domicilio-entrega', cliente.domicilio_entrega, { class: 'form-control' }) }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-sm-8">
+                {{ form.label('localidad-entrega', 'Localidad', { class: 'control-label' }) }}
+                {{ form.text('localidad-entrega', cliente.localidad_entrega, { class: 'form-control' }) }}
+            </div>
+            <div class="form-group col-sm-4">
+                {{ form.label('cp-entrega', 'Código postal', { class: 'control-label' }) }}
+                {{ form.text('cp-entrega', cliente.cp_entrega, { class: 'form-control' }) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="form-group required col-sm-6">
+        {{ form.label('grupo', 'Grupo', { class:'control-label' }) }}
+        {{ form.select('grupo', grupos, cliente.grupo_id, { class:'form-control', required:'' }) }}
+    </div>
+    <div class="form-group required col-sm-6">
+        {{ form.label('forma-pago', 'Forma de pago', { class:'control-label' }) }}
+        {{ form.select('forma-pago', formas_pago, cliente.forma_pago_id, { class:'form-control', required:'' }) }}
+    </div>
+</div>
+
+<div class="row">
+    <div class="form-group col-sm-12">
+        {{ form.label('notas', 'Notas', { class:'control-label' }) }}
+        {{ form.textarea('notas', cliente.notas, { class:'form-control', rows:'4' }) }}
+    </div>
+</div>
+
+<div class="row">
+    <div class="form-group col-sm-12">
+        {{ form.label('adv', 'Advertencias', { class:'control-label' }) }}
+        {{ form.textarea('adv', cliente.adv, { class:'form-control bg-adv', rows:'4' }) }}
+    </div>
+</div>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='shortcut icon' type='image/x-icon' href='favicon.ico' />
+    <title>{{ app.name }}</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="{{ siteUrlWithVersion('css/app/login.css') }}" >
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <form class="form-login" action="{{ urlFor('login') }}" method="post">
+            <h2 class="form-login-heading">Cerrajero</h2>
+            <label for="usuario" class="sr-only">Usuario</label>
+            <input type="text" name="usuario" class="form-control" placeholder="Nombre de usuario" required autofocus>
+            <label for="password" class="sr-only">Constraseña</label>
+            <input type="password" name="password" class="form-control" placeholder="Contraseña" required>
+            {% if flash.error %}
+                <div class="alert alert-danger" role="alert">{{ flash.error }}</div>
+            {% endif %}
+            <button class="btn btn-lg btn-success btn-block" type="submit">Ingresar</button>
+        </form>
+    </div>
+</body>
+</html>

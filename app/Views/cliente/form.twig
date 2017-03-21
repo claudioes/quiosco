@@ -1,0 +1,53 @@
+{% import "template/macro/form.twig" as form %}
+{% extends "template/base.twig" %}
+
+{% block jsapp %}
+    <script src="{{ siteUrlWithVersion('js/app/cliente.js') }}"></script>
+    <script>
+        $(function () {
+            App.Cliente.Form();
+        })
+    </script>
+{% endblock %}
+
+{% block content %}
+    {% set is_new = cliente is null %}
+
+    <h1>{{ is_new ? 'Nuevo': 'Modificando' }} cliente</h1>
+
+    <div class="alert alert-danger" role="alert" id="mensaje" style="display:none"></div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <form class="form" id="form" action="{{ urlFor('Cliente:save') }}" method="post" autocomplete="off">
+                {% if not is_new %}
+                    <input type="hidden" id="id" name="id" value="{{ cliente.id }}">
+                {% endif %}
+
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        {% include 'cliente/_tab_detalle.twig' %}
+                    </div>
+                    <div class="panel-footer">
+                        <button type="submit" class="btn btn-success" style="margin-right: 15px;">
+                            <i class="glyphicon glyphicon-ok"></i> Guardar
+                        </button>
+                        <a href="{{ urlFor('Cliente:index') }}">Cancelar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Cuenta corriente
+                </div>
+                <div class="panel-body">
+                    {% if not is_new %}
+                        {% include 'cliente/_tab_cc.twig' %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "/pedido/print-base.twig" %}
+
+{% block content %}
+    <table class="cabecera">
+        <tr>
+            <td colspan="4" class="text-center"><h2>PEDIDO Nº {{ pedido.id }}<h2></td>
+        </tr>
+        <tr>
+            <td><strong>Cliente:</string></td>
+            <td class="w100">{{ pedido.cliente.nombre }}</td>
+            <td class="text-right"><strong>Fecha:</strong></td>
+            <td class="text-right">{{ presupuesto.fecha|date("d/m/Y") }}</td>
+        </tr>
+    </table>
+    <table class="detalle">
+        <thead>
+            <tr>
+                <th>Cód.</th>
+                <th class="w100">Descripción</th>
+                <th>Cant</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for linea in detalle %}
+                <tr>
+                    {% set articulo = linea.articulo %}
+                    <td class="text-right">{{ articulo.codigo }}</td>
+                    <td>{{ articulo.descripcion }}</td>
+                    <td class="text-right">{{ linea.cantidad }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

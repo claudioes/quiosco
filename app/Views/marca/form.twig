@@ -1,0 +1,67 @@
+{% extends "template/base.twig" %}
+{% import 'template/macro/form.twig' as form %}
+
+{% block jsapp %}
+    <script src="{{ siteUrlWithVersion('js/app/marca.js') }}"></script>
+    <script>
+        Marca.FormView();
+    </script>
+{% endblock %}
+
+{% block content %}
+    <h1>{{ marca ? 'Modificando' : 'Nueva' }} marca</h1>
+
+    <div class="alert alert-danger" role="alert" id="mensaje" style="display:none"></div>
+
+    <form class="form" id="form" action="{{ urlFor('Marca:save') }}" method="post" autocomplete="off">
+        {% if marca %}
+            <input type="hidden" name="id" value="{{ marca.id }}">
+        {% endif %}
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        {{ form.label('nombre', 'Nombre', { class:'control-label' }) }}
+                        {{ form.text('nombre', marca.nombre, { class:'form-control', required:'' }) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        {{ form.label('orden', 'Orden', { class:'control-label' }) }}
+                        {{ form.text('orden', marca.orden ? marca.orden : '', { class:'form-control', placeholder:'Automático' }) }}
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                {{ form.submit('btn-guardar', '<i class="glyphicon glyphicon-ok"></i> Guardar', { class:'btn btn-success', style:'margin-right: 15px' }) }}
+                <a href="#" onclick="history.back();">Cancelar</a>
+            </div>
+        </div>
+    </form>
+
+    {% if articulos|length > 0 %}
+        <div class="panel panel-default">
+            <div class="panel-heading">{{ articulos|length }} artículos asociados</div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="articulos">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th style="width:100%">Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for articulo in articulos %}
+                                <tr>
+                                    <td>{{ articulo.codigo }}</td>
+                                    <td><a href="{{ urlFor('Articulo:edit', {'id': articulo.id}) }}">{{ articulo.descripcion }}</a></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

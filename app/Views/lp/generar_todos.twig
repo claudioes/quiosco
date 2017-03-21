@@ -1,0 +1,61 @@
+{% import 'template/macro/form.twig' as form %}
+{% extends "template/base.twig" %}
+
+{% block jsapp %}
+    <script src="{{ siteUrlWithVersion('js/app/lp.js') }}"></script>
+    <script>
+        LP.GenerarTodosView();
+    </script>
+{% endblock %}
+
+{% block content %}
+    <h1>Generar todas las listas de precios</h1>
+
+    <form class="form" id="form" action="{{ urlFor('LP:generar') }}" method="POST" autocomplete="off">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="form-group required col-md-4">
+                        {{ form.label('fecha', 'Fecha', { class: 'control-label' }) }}
+                        <div class="input-group">
+                            {{ form.text('fecha', 'now'|date('d/m/Y'), { class: 'form-control fecha', required: '' }) }}
+                            <div class="input-group-addon">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group required col-md-4">
+                        {{ form.label('numero', 'Número', { class: 'control-label' }) }}
+                        {{ form.text('numero', null, { class: 'form-control', required: '', autofocus:'' }) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        {{ form.label('cambios', 'Cambios realizados', { class: 'control-label' }) }}
+                        {{ form.textarea('cambios', null, { class: 'form-control' }) }}
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <button id="boton-generar" type="submit" class="btn btn-success" style="margin-right: 15px;"><i class="glyphicon glyphicon-flash"></i> Generar</button>
+                <a href="{{ urlFor('LP:index') }}">Volver al listado</a>
+            </div>
+        </div>
+
+        <div id="resultado" class="panel panel-default" style="display:none;">
+            <div class="panel-heading">
+                <h3 class="panel-title">Resultado</h3>
+            </div>
+            <table id="tabla-resultado" class="table table-bodered table-hover">
+                <thead>
+                    <th>Lista de precios</th>
+                    <th>Resultado</th>
+                    <th>Descargar</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </form>
+{% endblock %}

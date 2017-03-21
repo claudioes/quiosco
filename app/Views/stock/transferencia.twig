@@ -1,0 +1,78 @@
+{% import "template/macro/form.twig" as form %}
+{% extends "template/base.twig" %}
+
+{% block jsapp %}
+    <script src="{{ siteUrlWithVersion('js/app/modal.js') }}"></script>
+    <script src="{{ siteUrlWithVersion('js/app/stock.js') }}"></script>
+    <script>
+        Stock.TransferenciaView();
+    </script>
+{% endblock %}
+
+{% block content %}
+<h1>Transferencia de stock entre depositos</h1>
+<div class="alert alert-danger" role="alert" id="mensaje" style="display:none"></div>
+<form id="form" action="{{ urlFor('Stock:createTransferencia') }}" method="post">
+    {{ form.hidden('deposito-origen-id', null) }}
+    {{ form.hidden('deposito-destino-id', null) }}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="form-group required">
+                        {{ form.label('origen', 'Deposito de origen', { class: 'control-label' }) }}
+                        {{ form.select('origen', depositos, null, { class: 'form-control', required: '' }) }}
+                    </div>
+                    <div class="form-group required">
+                        {{ form.label('destino', 'Deposito de destino', { class: 'control-label' }) }}
+                        {{ form.select('destino', depositos, null, { class: 'form-control', required: '' }) }}
+                    </div>
+                    <div class="form-group required">
+                        {{ form.label('motivo', 'Motivo', { class: 'control-label' }) }}
+                        {{ form.text('motivo', null, { class: 'form-control', required: '' }) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table id="lineas" class="table">
+                            <thead>
+                                <tr>
+                                    <th width="100px">Código</th>
+                                    <th>Descripción</th>
+                                    <th width="100px">Stock en origen</th>
+                                    <th width="100px">Cantidad a transferir</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <td width="130px">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="codigo" placeholder="Buscar">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default" type="button" id="btn-buscar-articulo"><i class="glyphicon glyphicon-search"></i></button>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td colspan="3"></td>
+                                </tr>
+                            </tbody>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-12">
+            <button id="btn-ok" type="submit" class="btn btn-success" style="margin-right: 15px;"><i class="glyphicon glyphicon-ok"></i> Guardar</button>
+            <a href="#" onclick="history.back();">Cancelar</a>
+        </div>
+    </div>
+</form>
+{% endblock %}

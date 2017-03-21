@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='shortcut icon' type='image/x-icon' href='favicon.ico' />
+    <title>{{ app.name }}</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="{{ siteUrl('css/lib/datatables/dataTables.bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ siteUrl('css/lib/selectize/selectize.bootstrap3.css') }}">
+    <link rel="stylesheet" href="{{ siteUrl('css/lib/toastr.css') }}">
+    <link rel="stylesheet" href="{{ siteUrl('css/lib/datepicker/bootstrap-datepicker3.min.css') }}">
+    <link rel="stylesheet" href="{{ siteUrlWithVersion('css/app/main.css') }}">
+    <link rel="stylesheet" href="{{ siteUrlWithVersion('css/app/sidebar.css') }}">
+
+    {% block jslib %}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <script src="{{ siteUrl('js/lib/datatables/jquery.dataTables.min.js') }}"></script>
+        <script src="{{ siteUrl('js/lib/datatables/dataTables.bootstrap.min.js') }}"></script>
+        <script src="{{ siteUrl('js/lib/selectize/standalone/selectize.min.js') }}"></script>
+        <script src="{{ siteUrl('js/lib/bootbox.min.js') }}"></script>
+        <script src="{{ siteUrl('js/lib/toastr.min.js') }}"></script>
+        <script src="{{ siteUrl('js/lib/validation/jquery.validate.min.js') }}"></script>
+        <script src="{{ siteUrl('js/lib/validation/localization/messages_es.min.js') }}"></script>
+        <script src="{{ siteUrl('js/lib/validation/additional-methods.min.js') }}"></script>
+        <script src="{{ siteUrl('js/lib/datepicker/bootstrap-datepicker.min.js') }}"></script>
+        <script src="{{ siteUrl('js/lib/datepicker/locales/bootstrap-datepicker.es.min.js') }}"></script>
+        <script src="{{ siteUrl('js/lib/tinymce/tinymce.min.js') }}"></script>
+        <script src="{{ siteUrl('js/lib/tinymce/langs/es.js') }}"></script>
+        <!-- <script src="{{ siteUrl('js/lib/chart.min.js') }} }}"></script> -->
+
+        <script src="{{ siteUrlWithVersion('js/app/defaults.js') }}"></script>
+        <script src="{{ siteUrlWithVersion('js/app/common.js') }}"></script>
+        <script src="{{ siteUrlWithVersion('js/app/message.js') }}"></script>
+    {% endblock %}
+
+    {% block css %} {% endblock %}
+</head>
+<body>
+    {% include 'template/menu.twig' %}
+    {% include 'template/sidebar.twig' %}
+
+    <div class="main-content">
+        <div class="container-fluid">
+            {% if flash.success %}
+                <div class="alert alert-success alert-dismissable" role="alert" id="mensaje">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    {{ flash.success }}
+                </div>
+            {% endif %}
+
+            {% block content %} {% endblock %}
+        </div>
+    </div>
+
+    <script>
+        var Router = function(root) {
+            this.base = '{{ baseUrl() }}/';
+            this.root = this.base + root;
+            this.urlFor = function(resource, params) {
+                var absolutePath = this.root;
+                if (resource && String(resource).substring(0, 1) == '/') {
+                    resource = String(resource).substring(1);
+                }
+                if (resource) {
+                    absolutePath += '/' + resource;
+                }
+                if (params) {
+                    absolutePath += '?' + $.param(params);
+                }
+                return absolutePath;
+            };
+        };
+
+        $(function() {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+
+        var App = {
+            basePath: '{{ baseUrl() }}',
+            pathFor: function (resource, params) {
+                if (typeof resource != 'undefined' && String(resource).substring(0, 1) == '/') {
+                    resource = String(resource).substring(1);
+                }
+
+                if (typeof params != 'undefined') {
+                    params = $.param(params);
+                }
+
+                return '{{ baseUrl() }}/' + resource + (params? '?' + params: '') ;
+            },
+        };
+    </script>
+
+    {% block jsapp %} {% endblock %}
+</body>
+</html>

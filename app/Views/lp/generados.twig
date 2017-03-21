@@ -1,0 +1,26 @@
+<h3>Plantilla: <i>{{ lp.descripcion }}</i></h3>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Número</th>
+                <th>Cambios realizados</th>
+                <th>Descargar</th>
+            </tr>
+            <tbody>
+                {% for g in generados %}
+                    <tr>
+                        <td class="text-right">{{ g.fecha|date("d/m/Y") }}</td>
+                        <td class="text-right">{{ g.numero }}</td>
+                        <td>{{ g.cambios }}</td>
+                        <td><a href="{{ urlFor('LP:download', { id: g.id }) }}">Descargar</a></td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="2">No existen listas de precios generadas</td></tr>
+                {% endfor %}
+            </tbody>
+        </thead>
+    </table>
+</div>

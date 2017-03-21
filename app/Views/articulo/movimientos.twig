@@ -1,0 +1,49 @@
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th class="text-right">Fecha</th>
+            <th>Usuario</th>
+            <th>Descripción</th>
+            <th>Deposito</th>
+            <th class="text-right">Entrada</th>
+            <th class="text-right">Salida</th>
+            <th class="text-right">Saldo</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% set saldo = 0 %}
+
+        {% if saldoAnterior %}
+            {% set saldo = saldo + saldoAnterior %}
+            <tr>
+                <td colspan="6" class="text-right">Saldo anterior</td>
+                <td class="text-right">{{ saldo }}</td>
+            </tr>
+        {% endif %}
+
+        {% for m in movimientos %}
+            {% set usuario = m.usuario %}
+            {% set deposito = m.deposito %}
+
+            {% if m.tipo == 'E' %}
+                {% set saldo = saldo + m.cantidad %}
+            {% else %}
+                {% set saldo = saldo - m.cantidad %}
+            {% endif %}
+
+            <tr>
+                <td class="text-right">{{ m.fecha|date('d/m/Y') }}</td>
+                <td>{{ usuario.nombre }} {{ usuario.apellido }}</td>
+                <td>{{ m.descripcion }}</td>
+                <td>{{ deposito.nombre }}</td>
+                <td class="text-right">{{ m.tipo == 'E' ? m.cantidad : '' }}</td>
+                <td class="text-right">{{ m.tipo == 'S' ? m.cantidad : '' }}</td>
+                <td class="text-right">{{ saldo }}</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="6" class="text-right">Total</td>
+            <td class="text-right">{{ saldo }}</td>
+        </tr>
+    </tbody>
+</table>

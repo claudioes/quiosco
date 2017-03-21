@@ -1,0 +1,35 @@
+{% extends "template/base.twig" %}
+{% import 'template/macro/form.twig' as form %}
+
+{% block jsapp %}
+    <script src="{{ siteUrlWithVersion('js/app/cobrador.js') }}"></script>
+    <script>
+        Cobrador.FormView();
+    </script>
+{% endblock %}
+
+{% block content %}
+    <h1>{{ cobrador ? 'Modificando' : 'Nuevo' }} cobrador</h1>
+
+    <div class="alert alert-danger" role="alert" id="mensaje" style="display:none"></div>
+
+    <form class="form" id="form" action="{{ urlFor('Cobrador:save') }}" method="post" autocomplete="off">
+        {% if cobrador %}
+            <input type="hidden" name="id" value="{{ cobrador.id }}">
+        {% endif %}
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        {{ form.label('nombre', 'Nombre', { class:'control-label' }) }}
+                        {{ form.text('nombre', cobrador.nombre, { class:'form-control', required:'' }) }}
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                {{ form.submit('btn-guardar', '<i class="glyphicon glyphicon-ok"></i> Guardar', { class:'btn btn-success', style:'margin-right: 15px' }) }}
+                <a href="#" onclick="history.back();">Cancelar</a>
+            </div>
+        </div>
+    </form>
+{% endblock %}

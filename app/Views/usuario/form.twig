@@ -1,0 +1,142 @@
+{% import 'template/macro/form.twig' as form %}
+{% extends "template/base.twig" %}
+{% block jsapp %}
+    <script src="{{ siteUrlWithVersion('js/app/usuario.js') }}"></script>
+    <script>
+        Usuario.FormView();
+    </script>
+{% endblock %}
+{% block content %}
+    <h1>{{ data ? 'Modificando': 'Nuevo' }} usuario</h1>
+
+    <div  class="alert alert-danger" role="alert" id="mensaje" style="display: none"></div>
+
+    <form class="form" id="form" action="{{ urlFor('Usuario:save') }}" method="post">
+        {% if data %}
+            {{ form.hidden('id', data.id) }}
+        {% endif %}
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="form-group required col-md-6">
+                                {{ form.label('usuario', 'Nombre de usuario', { class:'control-label' }) }}
+                                {{ form.text('usuario', data.usuario, { class:'form-control', required:'' }) }}
+                            </div>
+                            <div class="form-group required col-md-3">
+                                {{ form.label('admin', 'Es administrador', { class:'control-label' }) }}
+                                {{ form.select('admin', { 1:'Si', 0:'No' }, data.administrador, { class:'form-control', required:'' }) }}
+                            </div>
+                            <div class="form-group required col-md-3">
+                                {{ form.label('activo', 'Está activo', { class:'control-label' }) }}
+                                {{ form.select('activo', {1:'Si', 0:'No'}, data.activo, { class:'form-control' }) }}
+                            </div>
+                        </div>
+                        {% if not data %}
+                            <div class="row">
+                                <div class="form-group required col-md-6">
+                                    {{ form.label('password', 'Contraseña', { class:'control-label' }) }}
+                                    {{ form.password('password', null, { class:'form-control', required:'' }) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group required col-md-6">
+                                    {{ form.label('repeticion', 'Repetir contraseña', { class:'control-label' }) }}
+                                    {{ form.password('repeticion', null, { class:'form-control', required:'' }) }}
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                {{ form.label('nombre', 'Nombre', { class:'control-label' }) }}
+                                {{ form.text('nombre', data.nombre, { class:'form-control' }) }}
+                            </div>
+                            <div class="form-group col-md-6">
+                                {{ form.label('apellido', 'Apellido', { class:'control-label' }) }}
+                                {{ form.text('apellido', data.apellido, { class:'form-control' }) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                {{ form.label('email', 'E-Mail', { class:'control-label' }) }}
+                                {{ form.text('email', data.email, { class:'form-control' }) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6 required">
+                                {{ form.label('cobrador', 'Caja', { class:'control-label' }) }}
+                                {{ form.select('cobrador', cobradores, data.cobrador_id, { class:'form-control', required:'' }) }}
+                            </div>
+                            <div class="form-group col-md-6 required">
+                                {{ form.label('categoria', 'Clientes', { class:'control-label' }) }}
+                                {{ form.select('categoria', categorias, data.cliente_categoria_id, { class:'form-control', required:'' }) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h4>Días y horarios</h4>
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                {% for k, dia in dias %}
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" value="{{ k }}" name="dias[]" {{ dia.seleccionado ? 'checked' }}>
+                                            {{ dia.nombre }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                {% set d = data.horario_desde ? data.horario_desde|date('H:s') : '' %}
+
+                                {{ form.label('horario-desde', 'Desde las', { class:'control-label' }) }}
+                                {{ form.text('horario-desde', d, { class:'form-control datepicker', placeholder:'hh:mm' }) }}
+                            </div>
+                            <div class="form-group col-md-6">
+                                {% set d = data.horario_hasta ? data.horario_hasta|date('H:s') : '' %}
+
+                                {{ form.label('horario-hasta', 'Hasta las', { class:'control-label' }) }}
+                                {{ form.text('horario-hasta', d, { class:'form-control datepicker', placeholder:'hh:mm' }) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <table class="table table-bordered table-hover" id="permisos" {{ data.administrador ? 'style="display:none"' }}>
+                        <thead>
+                            <th></th>
+                            <th class="w100">Permisos</th>
+                        </thead>
+                        <tbody>
+                            {% for p in permisos %}
+                                <tr {{ p.seleccionado ? 'class="success"' }}>
+                                    <td>
+                                        <label>
+                                            <input name="permiso[]" type="checkbox" value="{{ p.id }}" {{ p.seleccionado ? 'checked="checked"' }}>
+                                        </label>
+                                    </td>
+                                    <td>{{ p.descripcion }}</td>
+                                <tr>
+                            {% else %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-ok" style="margin-right: 5px;"></i>Guardar</button>
+                <a href="#" onclick="history.back();" style="margin-left: 10px;">Cancelar</a>
+            </div>
+        </div>
+    </form>
+{% endblock %}
