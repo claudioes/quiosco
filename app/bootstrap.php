@@ -100,7 +100,7 @@ $permitido = function ($app, $permiso) {
 
 $app->hook('slim.before.dispatch', function() use ($app) {
     $url = $app->request->getPath();
-
+    
     $publicResources = [
         $app->urlFor('login'),
     ];
@@ -116,6 +116,8 @@ $app->hook('slim.before.dispatch', function() use ($app) {
             //'resource' => $app->request->getResourceUri(),
         ],
     ]);
+
+   
 
     // Si el usuario está logueado, cargo la vista correspondiente.
     // Si no, redirigo al login
@@ -136,7 +138,7 @@ $app->hook('slim.before.dispatch', function() use ($app) {
 
 // ROUTES
 
-foreach (glob(ROOT . 'app/routes/*.php') as $filename) {
+foreach (glob(ROOT . 'app/Routes/*.php') as $filename) {
     require $filename;
 }
 

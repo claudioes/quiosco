@@ -42,8 +42,10 @@ class Controller
 
     protected function responseJson(array $data)
     {
-        header('Content-Type: application/json');
-        echo json_encode($data);
-        $this->app->stop();
+        $response = $this->app->response();
+
+        $response->headers->set('Content-Type', 'application/json');
+        $response->status(200);
+        $response->body(json_encode($data));
     }
 }

@@ -251,40 +251,6 @@ class Articulo extends Controller
         echo $dt->json();
     }
 
-    public function ultimoPrecio($id)
-    {
-        if (!$this->request->isAjax()) {
-            return;
-        }
-
-        $db = $this->db;
-        $articuloId = (int) $id;
-
-        $ultimo = $db
-            ->articulo_precio_historico
-            ->where('articulo_id', $articuloId)
-            ->order('fecha DESC')
-            ->fetch();
-
-        $modificado = $db->articulo->select('precio_modificado')[$articuloId];
-
-        $info = '';
-
-        if ($modificado) {
-            $info .= '<small class="text-muted">Modificado el</small><br>';
-            $info .= '<strong>' . Helper::formatDate($modificado['precio_modificado'], 'd/m/y H:i') . '</strong><br>';
-        }
-
-        if ($ultimo) {
-            $info .= '<small class="text-muted">Precio anterior</small><br>';
-            $info .= '<strong>$' . number_format($ultimo['precio'], 2, ',', '.') . '</strong>';
-        }
-
-        if ($info) {
-            echo "<div class=\"text-center\">$info</div>";
-        }
-    }
-
     public function savePrecio()
     {
         $db = $this->db;

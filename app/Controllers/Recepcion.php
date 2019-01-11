@@ -1,11 +1,11 @@
 <?php
 namespace App\Controllers;
 
-use Datatable;
-use Settings;
-use Helper;
 use \Exception;
 use \DateTime;
+use Helper;
+use App\Helpers\Settings;
+use App\Helpers\Datatable;
 
 class Recepcion extends Controller
 {

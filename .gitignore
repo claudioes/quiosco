@@ -1,6 +1,5 @@
-/app/cache/*
+/app/Views/cache
 /app/config.php
-/vendor/*
-/pdf/*
-/files/*
+/vendor
 .idea
+.vscode

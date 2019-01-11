@@ -116,6 +116,7 @@ class Grupo extends Controller
                 return '<a href="' . $app->urlFor('Grupo:edit', ['id' => $row['id']]) . '">' . $d . '</a>';
             })
             ->addColumn('descuento')
+            ->addColumn('recargo')
             ->addColumn('id', 'accion', function ($d, $row) use ($app) {
                 $t  = '<div class="btn-group pull-right">';
                 $t .=   '<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">';

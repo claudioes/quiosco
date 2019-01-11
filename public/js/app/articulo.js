@@ -87,11 +87,11 @@ App.Articulo = (function() {
                 var $desde = $('#movimientos-desde');
                 var $deposito = $('#movimientos-deposito');
                 var data = {
-                    'articulo': $('#articulo-id').val(),
+                    'articulo': $('#id').val(),
                     'deposito': $deposito.val(),
                     'desde': $desde.val(),
                 };
-
+                
                 $desde.prop('disabled', true);
                 $deposito.prop('disabled', true);
                 $movimientos.html('Cargando...');

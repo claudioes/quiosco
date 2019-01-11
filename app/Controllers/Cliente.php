@@ -234,7 +234,6 @@ class Cliente extends Controller
                 $cliente->update($values);
             }
         } catch (Exception $e) {
-            $db->transaction = 'ROLLBACK';
             $this->responseJson([
                 'success' => false,
                 'message' => $e->getMessage()

@@ -7,7 +7,7 @@ App.Cliente = (function() {
 
             var dt = $table.DataTable({
                 serverSide: true,
-                ajax: 'cliente/datatable',
+                ajax: App.pathFor('cliente/datatable'),
                 columns: [
                     { data: 'codigo', className: 'text-right' },
                     { data: 'nombre' },

@@ -42,11 +42,6 @@ $app->group("/articulo", $permitido($app, 'articulo'), function() use ($app, $pe
         (new Articulo($app))->delete($id);
     })->name('Articulo:delete');
 
-    // PRECIO ANTERIOR
-    $app->get('/ultimoprecio/:id', $permitido($app, 'articulo.precios'), function($id) use ($app) {
-        (new Articulo($app))->ultimoPrecio($id);
-    })->name('Articulo:ultimoPrecio');
-
     // PRECIO GUARDAR
     $app->post('/guardarprecio', $permitido($app, 'articulo.precios'), function() use ($app) {
         (new Articulo($app))->savePrecio();

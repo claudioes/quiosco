@@ -4,12 +4,12 @@ namespace App\Controllers;
 
 define("FOLDER_PROVEEDOR", FOLDER_FILES . 'proveedor');
 
-use Datatable;
-use Settings;
-use Helper;
-use Upload;
 use \Exception;
 use \DateTime;
+use Upload;
+use Helper;
+use App\Helpers\Settings;
+use App\Helpers\Datatable;
 
 class Proveedor extends Controller
 {
@@ -71,17 +71,17 @@ class Proveedor extends Controller
                 $proveedor = $db->proveedor[$id];
                 $proveedor->update($values);
             }
-
-            $this->app->flash('success', "Los datos del proveedor '$values[nombre]' fueron actualizados");
-            $this->responseJson([
-                'success' => true
-            ]);
         } catch (Exception $e) {
             $this->responseJson([
                 'success' => false,
                 'message' => $e->getMessage()
             ]);
         }
+
+        $this->app->flash('success', "Los datos del proveedor '$values[nombre]' fueron actualizados");
+        $this->responseJson([
+            'success' => true
+        ]);
     }
 
     public function delete($id)

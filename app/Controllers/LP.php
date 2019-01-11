@@ -1,6 +1,9 @@
 <?php
 namespace App\Controllers;
 
+use App\Helpers\Settings;
+use App\Helpers\Datatable;
+
 class LP extends Controller
 {
     private function createOrEdit($id = null)
@@ -163,7 +166,7 @@ class LP extends Controller
         }
 
         $app = $this->app;
-        $dt = new \Datatable(\Settings::get('db'), 'v_lp', 'id');
+        $dt = new Datatable(Settings::get('db'), 'v_lp', 'id');
         $dt->addColumn('id', 'DT_RowId', function ($d, $row) {
             return 'row_' . $d;
         })
@@ -307,7 +310,7 @@ class LP extends Controller
                 $filename = preg_replace("/[^a-z0-9\.]/", "", strtolower($grupo['nombre']));
                 $filename = "lista_" . $filename . "_" . $numero . "_" . date('YmdHis') . ".xlsx";
 
-                $export = new \Cerrajero\Helper\LP_Export\Excel();
+                $export = new \App\Helper\LP_Export\Excel();
                 $export->templateExcel = FOLDER_LP . 'modelo' . DS . $modeloId . '.xlsx';
                 $export->numero = $numero;
                 $export->fecha = $fecha;

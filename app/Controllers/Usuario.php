@@ -1,12 +1,12 @@
 <?php
 namespace App\Controllers;
 
-use Datatable;
-use Settings;
-use Helper;
 use \Exception;
 use \DateTime;
 use NotORM_Literal;
+use Helper;
+use App\Helpers\Settings;
+use App\Helpers\Datatable;
 
 class Usuario extends Controller
 {

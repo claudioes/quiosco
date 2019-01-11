@@ -111,6 +111,7 @@ class Marca extends Controller
             return 'row_' . $d;
         })
         ->addColumn('id')
+        ->addColumn('orden')
         ->addColumn('nombre', null, function ($d, $row) use ($app) {
             return '<a href="' . $app->urlFor('Marca:edit', ['id' => $row['id']]) . '">' . $d . '</a>';
         })

@@ -60,10 +60,10 @@ class Familia extends Controller
                 $familia = $db->familia[$id];
                 $familia->update($values);
             }
-
+            
             $this->app->flash('success', 'Los datos de la familia \'' . $values['nombre'] . '\' fueron actualizados');
             $this->responseJson([
-                'success' => true
+                    'success' => true
             ]);
         } catch (Exception $e) {
             $this->responseJson([
@@ -107,6 +107,7 @@ class Familia extends Controller
             return 'row_' . $d;
         })
             ->addColumn('id')
+            ->addColumn('orden')
             ->addColumn('nombre', null, function ($d, $row) use ($app) {
                 return '<a href="' . $app->urlFor('Familia:edit', ['id' => $row['id']]) . '">' . $d . '</a>';
             })
