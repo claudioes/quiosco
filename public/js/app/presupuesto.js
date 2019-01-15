@@ -106,63 +106,37 @@ Presupuesto.FormView = function() {
     var router = Presupuesto.router;
     var routerArticulo = new Router('articulo');
     var routerCliente = new Router('cliente');
-    var saldo = 0;
     var $cliente = $('#cliente');
-    var $lineas = $('#lineas');
     var $lineasBody = $('#lineas > tbody');
     var $codigo = $('#codigo');
     var $info = $('#info');
     var $form = $('#form');
-    var $ivaPorcentaje = $('#iva-porcentaje');
-    var $subtotal = $('#lbl-subtotal');
-    var $iva = $('#lbl-iva');
     var $total = $("#lbl-total");
     var $saldo = $('#lbl-saldo');
     var $adv = $('#adv');
     var depositoId = 1; // Distribuidora
 
     function calcularTotal() {
-        var subtotal = 0;
-        var ivaPorcentaje = Common.parseFloat($ivaPorcentaje.val());
-
+        var total = 0;
+        
         $lineasBody.find('tr').each(function(i, row) {
-            var tipoMovimiento = $('input[name="detalle-tipo[]"]', row).val();
             var cantidad = Common.parseFloat($('input[name="detalle-cantidad[]"]', row).val());
             var precio = Common.parseFloat($('input[name="detalle-precio[]"]', row).val());
-            var descuento1 = Common.parseFloat($('input[name="detalle-descuento1[]"]', row).val());
-            var descuento2 = Common.parseFloat($('input[name="detalle-descuento2[]"]', row).val());
-            var recargo = Common.parseFloat($('input[name="detalle-recargo[]"]', row).val());
-            var precioRecargo = Common.round(precio * (1+recargo/100), 2);
-            var precioNeto = Common.round(precioRecargo * (1-descuento1/100) * (1-descuento2/100), 2);
+            var descuento = Common.parseFloat($('input[name="detalle-descuento[]"]', row).val());
+            var precioNeto = Common.round(precio * (1-descuento/100), 2);
             var importe = cantidad * precioNeto;
+            
+            $('input[name="detalle-importe[]"]', row).val(importe.toFixed(2));
 
-            if (tipoMovimiento != 'C') {
-                $('input[name="detalle-importe[]"]', row).val(importe.toFixed(2));
-            }
-
-            switch (tipoMovimiento) {
-                case 'N':
-                    subtotal += importe;
-                    break;
-                case 'D':
-                    subtotal -= importe;
-                    break;
-            }
+            total += importe;
         });
 
-        var iva = Common.round(subtotal * ivaPorcentaje / 100, 2);
-        var total = subtotal + saldo + iva;
-
-        $subtotal.html(subtotal.toFixed(2));
-        $iva.html(iva.toFixed(2));
         $total.html(total.toFixed(2));
     }
 
     function agregarArticulo(articuloId) {
         var url;
-        var tipoMovimiento = $('#tipo-movimiento').val();
-        var tipoMovimientoDescripcion = $('#tipo-movimiento :selected').text();
-
+        
         if (articuloId) {
             url = routerArticulo.urlFor('buscar/' + articuloId, {deposito: depositoId});
         } else {
@@ -178,7 +152,6 @@ Presupuesto.FormView = function() {
                         var $row = $([
                             '<tr>',
                                 '<td>',
-                                    '<input type="hidden" name="detalle-tipo[]" value="', tipoMovimiento ,'">',
                                     '<input type="hidden" name="detalle-articulo-id[]" value="', articulo.id, '">',
                                     '<div class="input-group">',
                                         '<input type="text" class="form-control text-right" name="detalle-codigo[]" value="', articulo.codigo,'" readonly>',
@@ -190,19 +163,13 @@ Presupuesto.FormView = function() {
                                     '</div>',
                                 '</td>',
                                 '<td><textarea rows="1" class="form-control" name="detalle-descripcion[]" readonly>', articulo.descripcion, '"</textarea></td>',
-                                '<td><div class="input-group">',
-                                    '<input type="text" class="form-control text-right calcular" name="detalle-cantidad[]" value="1" placeholder="0">',
-                                    '<span class="input-group-addon" title="', tipoMovimientoDescripcion ,'"><strong>', tipoMovimiento ,'</strong><span>',
-                                '</div></td>',
+                                '<td><input type="text" class="form-control text-right calcular" name="detalle-cantidad[]" value="1" placeholder="0"></td>',
                                 '<td><input type="text" class="form-control text-right calcular" name="detalle-precio[]" value="', articulo.precio, '" placeholder="0.00"></td>',
-                                '<td><input type="text" class="form-control text-right calcular" name="detalle-descuento1[]" value="0.00"></td>',
-                                '<td><input type="text" class="form-control text-right calcular" name="detalle-descuento2[]" value="0.00"></td>',
-                                '<td><input type="text" class="form-control text-right" name="detalle-recargo[]" value="0.00" readonly></td>',
+                                '<td><input type="text" class="form-control text-right calcular" name="detalle-descuento[]" value="0.00"></td>',
                                 '<td><input type="text" class="form-control text-right" name="detalle-importe[]" value="0.00" readonly></td>',
                             '</tr>'
                         ].join('')).appendTo($lineasBody);
 
-                        aplicarDescuento($row);
                         $('input[name="detalle-cantidad[]"]', $row).focus().select();
                     } else {
                         Message.showError('No hay stock del artículo ' + articulo.codigo, 'Stock insuficiente');
@@ -213,36 +180,6 @@ Presupuesto.FormView = function() {
 
                 $codigo.val('');
             });
-    }
-
-    function aplicarDescuento(row) {
-        var articuloId = $('input[name="detalle-articulo-id[]"]', row).val();
-        var cantidad = Common.parseFloat($('input[name="detalle-cantidad[]"]', row).val());
-
-        var inputDescuento1 = $('input[name="detalle-descuento1[]"]', row);
-        var inputDescuento2 = $('input[name="detalle-descuento2[]"]', row);
-        var inputRecargo = $('input[name="detalle-recargo[]"]', row);
-
-        inputDescuento1.prop('disabled', true);
-        inputDescuento2.prop('disabled', true);
-        inputRecargo.prop('disabled', true);
-
-        $.getJSON(routerArticulo.urlFor('descuento'), {
-            'cliente': parseInt($cliente.val()),
-            'articulo': articuloId,
-            'cantidad': cantidad
-        }).done(function(result) {
-            if (result.success) {
-                inputDescuento1.val(result.descuento1.toFixed(2));
-                inputDescuento2.val(result.descuento2.toFixed(2));
-                inputRecargo.val(result.recargo.toFixed(2));
-                calcularTotal();
-            }
-        }).always(function() {
-            inputDescuento1.prop('disabled', false);
-            inputDescuento2.prop('disabled', false);
-            inputRecargo.prop('disabled', false);
-        });
     }
 
     function controlarStock(row) {
@@ -274,34 +211,15 @@ Presupuesto.FormView = function() {
         $.getJSON(routerCliente.urlFor('buscar/' + id))
             .done(function(result) {
                 if (result.success) {
-                    var descuentos = result.descuentos;
                     var cliente = result.cliente;
-
-                    saldo = cliente.saldo;
 
                     var lineas = [];
                     lineas.push('<strong>Dirección</strong><br>');
                     lineas.push(cliente.domicilio, ', ', cliente.localidad, '<br><br>');
                     lineas.push('<strong>Grupo</strong><br>');
-                    lineas.push(cliente.grupo, ' (-', cliente.descuento.toFixed(2), '%, +', cliente.recargo.toFixed(2), '%)<br><br>');
-                    lineas.push('<strong>Corredor</strong><br>');
-                    lineas.push(cliente.corredor, '<br><br>');
-                    lineas.push('<strong>Descuentos</strong><br>');
-
-                    if (descuentos.length === 0) {
-                        lineas.push('Sin descuentos');
-                    } else {
-                        lineas.push('<ul>');
-                        $.each(descuentos, function(i, value) {
-                            lineas.push('<li>', value.descripcion, '</li>');
-                        });
-                        lineas.push('</ul>');
-                    }
-
-                    lineas.push('<br><br><strong>Notas</strong><br>', cliente.notas, '<br><br>');
-
-                    $('input[name="saldo"]').val(saldo);
-                    $saldo.html(saldo.toFixed(2));
+                    lineas.push(cliente.grupo, ' (-', cliente.descuento.toFixed(2), '%)<br><br>');
+                    lineas.push('<strong>Notas</strong><br>', cliente.notas);
+                    
                     $info.html(lineas.join(''));
 
                     if (cliente.adv) {
@@ -375,8 +293,6 @@ Presupuesto.FormView = function() {
             }
         });
 
-        $('#iva-porcentaje').keyup(calcularTotal);
-
         $lineasBody.on('keyup', 'input.calcular', calcularTotal);
         $lineasBody.on('change', 'select.calcular', calcularTotal);
         $lineasBody.on('click', 'a.eliminar', function (e) {
@@ -385,7 +301,6 @@ Presupuesto.FormView = function() {
             calcularTotal();
         });
         $lineasBody.on('change', 'input[name="detalle-cantidad[]"]', function(e) {
-            aplicarDescuento($(this).parents('tr'));
             controlarStock($(this).parents('tr'));
         });
 

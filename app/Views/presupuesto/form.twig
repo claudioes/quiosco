@@ -63,9 +63,8 @@
                             <tbody>
                                 {% for d in detalle %}
                                     <tr>
-                                        <input type="hidden" name="detalle-tipo[]" value="N">
-                                        <input type="hidden" name="detalle-articulo-id[]" value="{{ d.articulo_id }}">
                                         <td>
+                                            <input type="hidden" name="detalle-articulo-id[]" value="{{ d.articulo_id }}">
                                             <div class="input-group">
                                                 <input type="text" class="form-control text-right" name="detalle-codigo[]" value="{{ d.codigo }}" readonly>
                                                 <span class="input-group-btn">
@@ -76,15 +75,16 @@
                                             </div>
                                         </td>
                                         <td><textarea rows="1" class="form-control" name="detalle-descripcion[]" readonly>{{ d.descripcion }}</textarea></td>
+                                        <td><input type="text" class="form-control text-right calcular" name="detalle-cantidad[]" value="{{ d.cantidad }}"></td>
                                         <td><input type="text" class="form-control text-right calcular" name="detalle-precio[]" value="{{ d.precio }}"></td>
-                                        <td><input type="text" class="form-control text-right calcular" name="detalle-descuento[]" value="{{ d.descuento1 }}"></td>
+                                        <td><input type="text" class="form-control text-right calcular" name="detalle-descuento[]" value="{{ d.descuento ?: 0 }}"></td>
                                         <td><input type="text" class="form-control text-right" name="detalle-importe[]" readonly></td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td>
+                                    <td colspan="6">
                                         <div class="input-group">
                                             <input type="text" class="form-control" id="codigo" placeholder="Buscar código...">
                                             <span class="input-group-btn">
@@ -94,10 +94,9 @@
                                             </span>
                                         </div>
                                     </td>
-                                    <td colspan="4"></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="7" class="text-right">Total</td>
+                                    <td colspan="5" class="text-right">Total</td>
                                     <td class="text-right">
                                         <span id="lbl-total"></span>
                                     </td>

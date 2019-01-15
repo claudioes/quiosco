@@ -1,11 +1,13 @@
 <?php
 namespace App\Controllers;
 
-use App\Helpers\Datatable;
+use mikehaertl\wkhtmlto\Pdf;
+use \Exception;
+use App\Models\Articulo;
 use App\Helpers\Settings;
 use App\Helpers\Helper;
-use \Exception;
-use mikehaertl\wkhtmlto\Pdf;
+use App\Helpers\Deposito;
+use App\Helpers\Datatable;
 
 class Presupuesto extends Controller
 {
@@ -84,13 +86,11 @@ class Presupuesto extends Controller
                         'pedido_detalle.cantidad')
                     ->where('pedido_detalle.pedido_id', $pedidoId);
 
-                $articulo = new App\Models\Articulo($this->pdo);
+                $articulo = new Articulo($this->pdo);
 
                 foreach ($pedidoDetalle as $item) {
                     $articuloId = (int)$item['articulo_id'];
                     $cantidad = (float)$item['cantidad'];
-
-                    $descuentos = $articulo->descuento($articuloId, $clienteId, $cantidad);
 
                     $detalle[] = [
                         'articulo_id' => $articuloId,
@@ -98,9 +98,6 @@ class Presupuesto extends Controller
                         'descripcion' => $item['descripcion'],
                         'cantidad' => $cantidad,
                         'precio' => (float)$item['precio'],
-                        'descuento1' => $descuentos['descuento1'],
-                        'descuento2' => $descuentos['descuento2'],
-                        'recargo' => $descuentos['recargo'],
                     ];
                 }
             }
@@ -146,39 +143,32 @@ class Presupuesto extends Controller
                 if (!$cliente) {
                     throw new Exception("El cliente con ID $clienteId no existe");
                 } else {
-                    // Cuenta corriente donde se imputará el presupuesto
-                    $cuentaId = $cliente['cuenta_id']? $cliente['cuenta_id']: $clienteId;
-
                     // Saldo actualizado de la cuenta corriente
-                    // No se usa mas lo que viene en el POST porque a veces hay diferencias
                     $saldo = (float)$cliente['saldo'];
                 }
             }
 
-            $ivaPorcentaje = (float)$request->post('iva-porcentaje');
-            $ivaDescripcion = trim($request->post('iva-descripcion'));
             $notas = trim($request->post('notas'));
-
             $detalleArticuloId = $request->post('detalle-articulo-id');
             $detalleTipo = $request->post('detalle-tipo');
             $detalleCodigo = $request->post('detalle-codigo');
             $detalleDescripcion = $request->post('detalle-descripcion');
             $detalleCantidad = $request->post('detalle-cantidad');
             $detallePrecio = $request->post('detalle-precio');
-            $detalleDescuento1 = $request->post('detalle-descuento1');
-            $detalleDescuento2 = $request->post('detalle-descuento2');
-            $detalleRecargo = $request->post('detalle-recargo');
-
+            $detalleDescuento = $request->post('detalle-descuento');
+            
             if (!$detalleArticuloId || count($detalleArticuloId) === 0) {
                 throw new Exception('No se ingresaron artículos al detalle');
             }
 
-            # Parseo el detalle y se calculan los importes
+            # Detalle y cálculo de importes
+
             $items = [];
             $faltaStock = [];
-            $subtotal = 0;
-            $ruleArticulo = new App\Models\Articulo($this->pdo);
+            $total = 0;
+            $ruleArticulo = new Articulo($this->pdo);
             $errores = [];
+
             foreach ($detalleArticuloId as $i => $articuloId) {
                 $item = [
                     'tipo'          => $detalleTipo[$i],
@@ -187,10 +177,8 @@ class Presupuesto extends Controller
                     'descripcion'   => $detalleDescripcion[$i],
                     'cantidad'      => (int) $detalleCantidad[$i],
                     'precio'        => (float) $detallePrecio[$i],
-                    'descuento1'    => (float) $detalleDescuento1[$i],
-                    'descuento2'    => (float) $detalleDescuento2[$i],
-                    'recargo' => (float) $detalleRecargo[$i],
-                    'stock' => $ruleArticulo->stock($articuloId, \Deposito::DISTRIBUIDORA),
+                    'descuento'     => (float) $detalleDescuento[$i],
+                    'stock'         => $ruleArticulo->stock($articuloId, Deposito::DISTRIBUIDORA),
                 ];
 
                 if ($item['cantidad'] === 0) {
@@ -198,20 +186,12 @@ class Presupuesto extends Controller
                 } elseif ($item['cantidad'] > $item['stock']) {
                     $errores[] = "No hay suficiente stock del artículo $item[codigo] (Stock: $item[stock])";
                 } else {
-                    $precio = round($item['precio'] * (1 + $item['recargo'] / 100), 2);
-                    $precioNeto = round($precio * (1 - $item['descuento1'] / 100) * (1 - $item['descuento2'] / 100), 2);
+                    $precio = round($item['precio'], 2);
+                    $precioNeto = round($precio * (1 - $item['descuento'] / 100), 2);
                     $importe = $item['cantidad'] * $precioNeto;
-
-                    switch ($item['tipo']) {
-                        case 'N': # Normal, suma al total
-                        $subtotal += $importe;
-                        break;
-                        case 'D': # Devolución, resta al total
-                        $subtotal -= $importe;
-                        break;
-                        case 'C': # Cambio, no modifica el total
-                    }
-
+                    
+                    $total += $importe;
+                    
                     $item['importe'] = $importe;
                     $items[] = $item;
                 }
@@ -220,9 +200,6 @@ class Presupuesto extends Controller
             if ($errores) {
                 throw new Exception('<ul><li>' . implode('</li><li>', $errores) . '</li></ul>');
             }
-
-            $iva = round($subtotal * $ivaPorcentaje / 100, 2);
-            $total = $subtotal + $iva;
 
             if ($total == 0) {
                 throw new Exception('El total del presupuesto no puede ser 0 (cero)');
@@ -235,10 +212,6 @@ class Presupuesto extends Controller
                 $presupuesto = $db->presupuesto()->insert([
                     'cliente_id'        => $clienteId,
                     'fecha'             => new \NotORM_Literal("NOW()"),
-                    'subtotal'          => $subtotal,
-                    'iva_porcentaje'    => $ivaPorcentaje,
-                    'iva_descripcion'   => $ivaDescripcion,
-                    'iva'               => $iva,
                     'total'             => $total,
                     'cliente_saldo'     => $saldo,
                     'pedido_id'         => $pedidoId,
@@ -258,50 +231,26 @@ class Presupuesto extends Controller
                 foreach ($items as $item) {
                     $articuloId = $item['articulo_id'];
                     $costo = $db->articulo[$articuloId]['costo'];
-                    $tipoMovimiento = '';
-
-                    switch ($item['tipo']) {
-                        case 'N': # Normal, descuenta de stock
-                            $tipoMovimiento = 'S';
-                            break;
-                        case 'D': # Devolución, devuelve a stock
-                            $tipoMovimiento = 'E';
-                            break;
-                        case 'C': # Cambio, no afecta stock
-                    }
-
+                    
                     # Movimiento de stock
-                    if ($item['cantidad'] > 0 && $tipoMovimiento) {
+
+                    if ($item['cantidad'] > 0) {
                         // En presupuestos se descuenta del deposito "Distribuidora"
                         $db->stock_movimiento->insert([
                             'fecha'         => new \NotORM_Literal('NOW()'),
                             'descripcion'   => $concepto,
                             'articulo_id'   => $articuloId,
-                            'deposito_id'   => \Deposito::DISTRIBUIDORA,
+                            'deposito_id'   => Deposito::DISTRIBUIDORA,
                             'cantidad'      => $item['cantidad'],
                             'costo'         => $costo,
                             'precio'        => $item['precio'],
-                            'tipo'          => $tipoMovimiento,
+                            'tipo'          => 'S',
                             'usuario_id'    => $this->usuario->id,
                         ]);
-
-                        // Si el presupuesto tiene IVA, se descuenta ademas del deposito "Stock A"
-                        // if ($ivaPorcentaje > 0) {
-                        //     $db->stock_movimiento->insert([
-                        //         'fecha'         => new \NotORM_Literal('NOW()'),
-                        //         'descripcion'   => $concepto,
-                        //         'articulo_id'   => $articuloId,
-                        //         'deposito_id'   => \Deposito::STOCKA,
-                        //         'cantidad'      => $item['cantidad'],
-                        //         'costo'         => $costo,
-                        //         'precio'        => $item['precio'],
-                        //         'tipo'          => $tipoMovimiento,
-                        //         'usuario_id'    => $this->usuario->id,
-                        //     ]);
-                        // }
                     }
 
                     # Detalle del presupuesto
+
                     $db->presupuesto_detalle->insert([
                         'presupuesto_id'    => $presupuestoId,
                         'articulo_id'       => $articuloId,
@@ -310,15 +259,13 @@ class Presupuesto extends Controller
                         'costo'             => $costo,
                         'precio'            => $item['precio'],
                         'cantidad'          => $item['cantidad'],
-                        'descuento1'        => $item['descuento1'],
-                        'descuento2'        => $item['descuento2'],
-                        'recargo'           => $item['recargo'],
-                        'tipo'              => $item['tipo']
+                        'descuento'         => $item['descuento'],
                     ]);
                 }
 
                 // Cuenta corriente del cliente
                 // El importe puede ser negativo por una devolución
+
                 $debe = 0;
                 $haber = 0;
                 if ($total >= 0) {
@@ -328,7 +275,7 @@ class Presupuesto extends Controller
                 }
 
                 $db->cliente_cc->insert([
-                    'cliente_id'        => $cuentaId,
+                    'cliente_id'        => $clienteId,
                     'fecha'             => new \NotORM_Literal('NOW()'),
                     'concepto'          => $concepto,
                     'debe'              => $debe,
