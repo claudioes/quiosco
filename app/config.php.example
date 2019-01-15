@@ -1,4 +1,7 @@
 <?php
+
+use App\Helpers\Settings;
+
 define('DEBUG', true);
 define('FOLDER_FILES', ROOT . 'files' . DS);
 
@@ -7,7 +10,7 @@ define('FOLDER_FILES', ROOT . 'files' . DS);
 // You can use --zoom 0.78125 (75/96) to get the same effect on Linux.
 define('WKHTMLTOPDF_ZOOM', 0.80);
 
-Settings::set('url', 'http://localhost/quiosco');
+Settings::set('url', 'http://quiosco.test');
 
 Settings::set('db', [
     'host'   => 'localhost',

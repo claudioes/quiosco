@@ -11,5 +11,10 @@
         "psr-4": {
             "App\\": "app/"
         }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "@php -r \"file_exists('app/config.php') || copy('app/config.php.example', 'app/config.php'); \""
+        ]
     }
 }

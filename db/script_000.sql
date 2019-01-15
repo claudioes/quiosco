@@ -194,7 +194,7 @@ CREATE TABLE IF NOT EXISTS `cliente_cc` (
   CONSTRAINT `fk_cliente_cc_cliente` FOREIGN KEY (`cliente_id`) REFERENCES `cliente` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_cliente_cc_presupuesto` FOREIGN KEY (`presupuesto_id`) REFERENCES `presupuesto` (`id`),
   CONSTRAINT `fk_cliente_cc_recibo` FOREIGN KEY (`recibo_id`) REFERENCES `recibo` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=19143 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=19144 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
 -- Dumping structure for table quiosco.cliente_descuento
@@ -401,7 +401,7 @@ CREATE TABLE IF NOT EXISTS `pedido` (
   PRIMARY KEY (`id`),
   KEY `fk_pedido_cliente` (`cliente_id`),
   CONSTRAINT `fk_pedido_cliente` FOREIGN KEY (`cliente_id`) REFERENCES `cliente` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6660 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6662 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
 -- Dumping structure for table quiosco.pedido_detalle
@@ -416,7 +416,7 @@ CREATE TABLE IF NOT EXISTS `pedido_detalle` (
   KEY `fk_pedido_detalle_articulo` (`articulo_id`),
   CONSTRAINT `fk_pedido_detalle_articulo` FOREIGN KEY (`articulo_id`) REFERENCES `articulo` (`id`),
   CONSTRAINT `fk_pedido_detalle_pedido` FOREIGN KEY (`pedido_id`) REFERENCES `pedido` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=52794 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=52796 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
 -- Dumping structure for table quiosco.permiso
@@ -433,10 +433,6 @@ CREATE TABLE IF NOT EXISTS `presupuesto` (
   `cliente_id` int(11) NOT NULL,
   `cliente_saldo` decimal(10,2) NOT NULL DEFAULT '0.00',
   `fecha` datetime NOT NULL,
-  `subtotal` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `iva_descripcion` varchar(100) DEFAULT NULL,
-  `iva_porcentaje` float NOT NULL DEFAULT '0',
-  `iva` decimal(10,2) NOT NULL DEFAULT '0.00',
   `total` decimal(10,2) NOT NULL DEFAULT '0.00',
   `cobrado` decimal(10,2) NOT NULL DEFAULT '0.00',
   `anulado` tinyint(1) NOT NULL DEFAULT '0',
@@ -447,7 +443,7 @@ CREATE TABLE IF NOT EXISTS `presupuesto` (
   KEY `fk_presupuesto_pedido` (`pedido_id`),
   CONSTRAINT `fk_presupuesto_cliente` FOREIGN KEY (`cliente_id`) REFERENCES `cliente` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_presupuesto_pedido` FOREIGN KEY (`pedido_id`) REFERENCES `pedido` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16220 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=16224 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
 -- Dumping structure for table quiosco.presupuesto_detalle
@@ -460,16 +456,13 @@ CREATE TABLE IF NOT EXISTS `presupuesto_detalle` (
   `cantidad` int(11) NOT NULL DEFAULT '0',
   `costo` decimal(10,2) NOT NULL DEFAULT '0.00',
   `precio` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `descuento1` float NOT NULL DEFAULT '0',
-  `descuento2` float NOT NULL DEFAULT '0',
-  `recargo` float NOT NULL DEFAULT '0',
-  `tipo` enum('N','D','C') NOT NULL DEFAULT 'N',
+  `descuento` float NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `fk_presupuesto_detalle_presupuesto` (`presupuesto_id`),
   KEY `fk_presupuesto_detalle_articulo` (`articulo_id`),
   CONSTRAINT `fk_presupuesto_detalle_articulo` FOREIGN KEY (`articulo_id`) REFERENCES `articulo` (`id`) ON DELETE SET NULL,
   CONSTRAINT `fk_presupuesto_detalle_presupuesto` FOREIGN KEY (`presupuesto_id`) REFERENCES `presupuesto` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=124632 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=124636 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
 -- Dumping structure for table quiosco.proveedor
@@ -640,7 +633,7 @@ CREATE TABLE IF NOT EXISTS `stock_movimiento` (
   CONSTRAINT `fk_movimiento_stock_articulo` FOREIGN KEY (`articulo_id`) REFERENCES `articulo` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_movimiento_stock_deposito` FOREIGN KEY (`deposito_id`) REFERENCES `deposito` (`id`),
   CONSTRAINT `fk_movimiento_stock_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=79338 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=79345 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
 -- Dumping structure for table quiosco.stock_transferencia
@@ -907,7 +900,17 @@ CREATE TABLE `v_pedido` (
 
 -- Dumping structure for view quiosco.v_presupuesto
 -- Creating temporary table to overcome VIEW dependency errors
-CREATE TABLE `v_presupuesto` 
+CREATE TABLE `v_presupuesto` (
+	`id` INT(11) NOT NULL,
+	`fecha` DATETIME NOT NULL,
+	`cliente_id` INT(11) NOT NULL,
+	`cliente_codigo` INT(11) NOT NULL,
+	`cliente_nombre` VARCHAR(100) NOT NULL COLLATE 'utf8_general_ci',
+	`total` DECIMAL(10,2) NOT NULL,
+	`cliente_saldo` DECIMAL(10,2) NOT NULL,
+	`anulado` TINYINT(1) NOT NULL,
+	`pedido_id` INT(11) NULL,
+	`notas` TEXT NULL COLLATE 'utf8_general_ci'
 ) ENGINE=MyISAM;
 
 -- Dumping structure for view quiosco.v_presupuesto_detalle
@@ -921,12 +924,8 @@ CREATE TABLE `v_presupuesto_detalle` (
 	`cantidad` INT(11) NOT NULL,
 	`costo` DECIMAL(10,2) NOT NULL,
 	`precio` DECIMAL(10,2) NOT NULL,
-	`precio_recargo` DOUBLE(19,2) NULL,
-	`descuento1` FLOAT NOT NULL,
-	`descuento2` FLOAT NOT NULL,
-	`recargo` FLOAT NOT NULL,
+	`descuento` FLOAT NOT NULL,
 	`precio_neto` DOUBLE(19,2) NULL,
-	`tipo` ENUM('N','D','C') NOT NULL COLLATE 'utf8_general_ci',
 	`importe` DOUBLE(19,2) NULL
 ) ENGINE=MyISAM;
 
@@ -1049,12 +1048,12 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`minim`@`%` SQL SECURITY DEFINER VIEW `v_pedi
 -- Dumping structure for view quiosco.v_presupuesto
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `v_presupuesto`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`minim`@`%` SQL SECURITY DEFINER VIEW `v_presupuesto` AS select `p`.`id` AS `id`,`p`.`fecha` AS `fecha`,`p`.`cliente_id` AS `cliente_id`,`c`.`codigo` AS `cliente_codigo`,`c`.`nombre` AS `cliente_nombre`,`c`.`cliente_categoria_id` AS `cliente_categoria_id`,`p`.`subtotal` AS `subtotal`,`p`.`iva_descripcion` AS `iva_descripcion`,`p`.`iva_porcentaje` AS `iva_porcentaje`,`p`.`iva` AS `iva`,`p`.`total` AS `total`,`p`.`cliente_saldo` AS `cliente_saldo`,`p`.`anulado` AS `anulado`,`p`.`pedido_id` AS `pedido_id`,`p`.`notas` AS `notas` from (`presupuesto` `p` join `cliente` `c` on((`p`.`cliente_id` = `c`.`id`)));
+CREATE ALGORITHM=UNDEFINED DEFINER=`minim`@`%` SQL SECURITY DEFINER VIEW `v_presupuesto` AS select `p`.`id` AS `id`,`p`.`fecha` AS `fecha`,`p`.`cliente_id` AS `cliente_id`,`c`.`codigo` AS `cliente_codigo`,`c`.`nombre` AS `cliente_nombre`,`p`.`total` AS `total`,`p`.`cliente_saldo` AS `cliente_saldo`,`p`.`anulado` AS `anulado`,`p`.`pedido_id` AS `pedido_id`,`p`.`notas` AS `notas` from (`presupuesto` `p` join `cliente` `c` on((`p`.`cliente_id` = `c`.`id`)));
 
 -- Dumping structure for view quiosco.v_presupuesto_detalle
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `v_presupuesto_detalle`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`minim`@`%` SQL SECURITY DEFINER VIEW `v_presupuesto_detalle` AS select `d`.`id` AS `id`,`d`.`presupuesto_id` AS `presupuesto_id`,`d`.`articulo_id` AS `articulo_id`,`d`.`codigo` AS `codigo`,`d`.`descripcion` AS `descripcion`,`d`.`cantidad` AS `cantidad`,`d`.`costo` AS `costo`,`d`.`precio` AS `precio`,round((`d`.`precio` * (1 + (`d`.`recargo` / 100))),2) AS `precio_recargo`,`d`.`descuento1` AS `descuento1`,`d`.`descuento2` AS `descuento2`,`d`.`recargo` AS `recargo`,round(((round((`d`.`precio` * (1 + (`d`.`recargo` / 100))),2) * (1 - (`d`.`descuento1` / 100))) * (1 - (`d`.`descuento2` / 100))),2) AS `precio_neto`,`d`.`tipo` AS `tipo`,(`d`.`cantidad` * round(((round((`d`.`precio` * (1 + (`d`.`recargo` / 100))),2) * (1 - (`d`.`descuento1` / 100))) * (1 - (`d`.`descuento2` / 100))),2)) AS `importe` from `presupuesto_detalle` `d`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`minim`@`%` SQL SECURITY DEFINER VIEW `v_presupuesto_detalle` AS select `d`.`id` AS `id`,`d`.`presupuesto_id` AS `presupuesto_id`,`d`.`articulo_id` AS `articulo_id`,`d`.`codigo` AS `codigo`,`d`.`descripcion` AS `descripcion`,`d`.`cantidad` AS `cantidad`,`d`.`costo` AS `costo`,`d`.`precio` AS `precio`,`d`.`descuento` AS `descuento`,round((`d`.`precio` * (1 - (`d`.`descuento` / 100))),2) AS `precio_neto`,(`d`.`cantidad` * round((`d`.`precio` * (1 - (`d`.`descuento` / 100))),2)) AS `importe` from `presupuesto_detalle` `d`;
 
 -- Dumping structure for view quiosco.v_proveedor
 -- Removing temporary table and create final VIEW structure
